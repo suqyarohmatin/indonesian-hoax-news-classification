@@ -60,17 +60,16 @@ Pada proyek ini, mahasiswa diharapkan dapat:
 ## 2. PROJECT OVERVIEW  **[L]**
 
 ### 2.1 Latar Belakang
-**Isi bagian ini dengan:**
-- Mengapa proyek ini penting?
-- Permasalahan umum pada domain terkait (misal: kesehatan, pendidikan, keuangan, pertanian, NLP, computer vision, dll.)
-- Manfaat proyek untuk pengguna, bisnis, atau penelitian
-- Studi literatur atau referensi ilmiah (minimal 1–2 sumber wajib)
-- Keterkaitan masalah dengan SDGs yang dipilih (dijabarkan di Bab 2.2)
+Penyebaran berita hoaks melalui media sosial telah menjadi ancaman serius bagi stabilitas sosial, politik dan kesehatan masyarakat. Tingginya volume dan kecepatan alur informasi digital menyebabkan masyarakat rentan meneruma serta menyebarkan informasi yang salah sebelum sempat memverifikasi kebenarannya. Pembuktian kebenaran berita secara manual oleh manusia membutuhkan waktu, tenaga, dan sumber daya yang banyak, sehingga sering kali terlambat dibandingkan dengan viralnya berita hoaks tersebut.
 
-**Contoh referensi (berformat APA/IEEE):**
-> Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press.
+Pengembangan Sistem otomatis berbasis Mechine Learning dan Deep Learning untuk mendeteksi berita hoaks menjadi kunci untuk mempercepat proses verifikasi teks. dengan memanfaatkan teknik Natural Language Processing(NLP), model dapat mengenali pola kebahasaan, struktur teks, dan karakteristik semantik yang membedakan artikel berita hoaks dengan berita valid. Sistem ini dirancang untuk alat bantu navigasi informasi awal bagi masyarakat, bukan sebagai pengambil keputusan mutlak atas kebenaran suatu berita.
 
-**[Jelaskan konteks dan latar belakang proyek]**
+Implementasi proyek ini mendukung Sustainabel Development Goals(SDG 16), yaitu menciptakan perdamaian,keadilan dan kelembagaan yang tangguh. dengan menyediakan mekanisme otomatisasi filter berita hoaks, masyarakat dapat memperoleh akses informasi yang lebih terpercaya.
+
+**Referensi (berformat APA/IEEE):**
+> Jocelynne, C., Wijayakusuma, I. L., & Harini, L. P. I. (2025). Detection of Political Hoax News Using Fine-Tuning IndoBERT. Journal of Applied Informatics and Computing, 9(2), 354–360. https://doi.org/10.30871/jaic.v9i2.8989.
+> Rachmawati, O. C. R., & Darmawan, Z. M. E. (2024). The Comparison of Deep Learning Models for Indonesian Political Hoax News Detection. CommIT Journal, 18(2), 123–135. https://doi.org/10.21512/commit.v18i2.10929
+
 
 ### 2.2 Keterkaitan dengan SDGs (WAJIB)
 
@@ -78,21 +77,21 @@ Ide proyek **berasal dari mahasiswa** dan harus selaras dengan **salah satu** da
 
 | Komponen | Pertanyaan Panduan | Jawaban Anda |
 |----------|--------------------|--------------|
-| **SDG yang dipilih** | Goal nomor berapa dan apa namanya? | [ ... ] |
-| **Target SDG** | Target (misal 3.4, 13.1) mana yang paling relevan? | [ ... ] |
-| **Masalah nyata** | Masalah konkret apa yang diangkat? Siapa yang terdampak? | [ ... ] |
-| **Peran ML** | Mengapa ML/DL cocok? Apa keputusan atau proses yang dibantu? | [ ... ] |
-| **Indikator kontribusi** | Bagaimana hasil model berkontribusi pada target SDG (langsung/tidak langsung)? | [ ... ] |
-| **Pertimbangan etika** | Risiko bias, privasi, atau dampak salah prediksi? | [ ... ] |
+| **SDG yang dipilih** | Goal nomor berapa dan apa namanya? |  SDG 16: Peace, Justice, and Strong Institutions (Perdamaian, Keadilan, dan Kelembagaan yang Tangguh)  |
+| **Target SDG** | Target (misal 3.4, 13.1) mana yang paling relevan? |  Target 16.10: Menjamin akses publik terhadap informasi dan melindungi kebebasan fundamental, sesuai dengan perundang-undangan nasional dan perjanjian internasional  |
+| **Masalah nyata** | Masalah konkret apa yang diangkat? Siapa yang terdampak? |  Tingginya tingkat penyebaran hoaks di platform digital Indonesia yang dapat memicu disinformasi, konflik sosial, dan miskonsepsi publik. Pihak yang terdampak adalah masyarakat umum pengguna internet dan media sosial.  |
+| **Peran ML** | Mengapa ML/DL cocok? Apa keputusan atau proses yang dibantu? |  ML/DL sangat efisien dalam mengekstraksi fitur teks berbahasa Indonesia dalam jumlah besar secara cepat. Model membantu mempercepat klasifikasi awal berita (pre-filtering) sebelum dilakukan verifikasi mendalam.  |
+| **Indikator kontribusi** | Bagaimana hasil model berkontribusi pada target SDG (langsung/tidak langsung)? |  Kontribusi tidak langsung: Meningkatkan kualitas dan keandalan informasi yang diterima publik, serta meminimalkan penyebaran konten disinformasi yang merusak kebebasan fundamental dan perdamaian sosial.  |
+| **Pertimbangan etika** | Risiko bias, privasi, atau dampak salah prediksi? |  Risiko false positive (berita valid dianggap hoaks) yang dapat membatasi kebebasan berpendapat, serta bias dataset terhadap topik politik tertentu. Hasil prediksi wajib diposisikan sebagai rekomendasi awal, bukan keputusan final.  |
 
-**Sumber ide:** [Jelaskan dari mana ide muncul: pengalaman pribadi, lingkungan sekitar, isu lokal/nasional, dll.]
+**Sumber ide:** [Ide ini muncul dikarenakan seringnya saya mendengar bahwa nenek saya termakan hoaks yang ia baca dihp]
 
 ### 2.3 Ringkasan Alur Lifecycle Proyek
 Jelaskan dalam 1 paragraf pendek bagaimana proyek Anda melewati tahap L → M → O → P (dan iterasi apa yang direncanakan).
 
 **[Tulis ringkasan alur lifecycle proyek Anda]**
 
----
+Proyek ini dijalankan melalui alur lifecycle bertahap yang mencakup tahap L (Problem Formulation & Data Preparation), M (Modeling & Baseline Comparison), O (Optimization & Evaluation), hingga P (Deployment & Monitoring). Pada tahap L, masalah dirumuskan ke dalam kerangka binary text classification dan data berita berbahasa Indonesia diproses (cleaning, lowercasing, stopword removal, lemmatization/stemming). Pada tahap M dan O, dikembangkan tiga arsitektur model (Multinomial Naive Bayes sebagai baseline, Support Vector Machine sebagai model advanced, serta Long Short-Term Memory sebagai model Deep Learning) yang dievaluasi menggunakan F1-Score, Precision, Recall, dan Confusion Matrix. Iterasi direncanakan pada tahap pemrosesan fitur (eksperimen TF-IDF vs word embedding) serta penyesuaian hyperparameter untuk mengurangi overfitting dan bias klasifikasi.
 
 ## 3. BUSINESS UNDERSTANDING / PROBLEM UNDERSTANDING  **[L]**
 
@@ -107,15 +106,19 @@ Tuliskan 2–4 pernyataan masalah yang jelas dan spesifik.
 
 **[Tulis problem statements Anda di sini]**
 
+1. Efisiensi Verifikasi Teks: Bagaimana membangun model klasifikasi otomatis yang dapat membedakan teks berita hoaks dan valid berbahasa Indonesia secara presisi dan cepat guna mengurangi ketergantungan pada pemeriksaan manual?
+2. Kinerja Arsitektur Model: Sejauh mana performa arsitektur Deep Learning (LSTM) dapat mengungguli metode klasik Machine Learning (Multinomial Naive Bayes dan Support Vector Machine) dalam menangkap pola kontekstual dan urutan kata pada teks berita hoaks?
+3. Penanganan Unstructured Text & Imbalance Data: Bagaimana menerapkan teknik text preprocessing dan ekstraksi fitur (TF-IDF vs Embedding) yang efektif untuk menangani noise, variasi kosakata, serta potensi ketidakseimbangan kelas (class imbalance) pada dataset berita berbahasa Indonesia?
+
 ### 3.2 Formulasi Learning Problem (WAJIB)
 
 Rumuskan masalah dalam kerangka *Learning Problem*:
 
 | Komponen | Pertanyaan Panduan | Jawaban Anda |
 |----------|--------------------|--------------|
-| **Target** | Apa yang diprediksi? Jenis tugas (klasifikasi biner/multikelas, regresi, forecasting, clustering, dll.)? | [ ... ] |
-| **Objective** | Apa yang dioptimalkan/diminimalkan secara matematis (misal: cross-entropy, MSE)? Metrik keberhasilan utama? | [ ... ] |
-| **Data** | Sumber, ukuran, jenis, dan asumsi tentang data (i.i.d.? distribusi train vs test?) | [ ... ] |
+| **Target** | Apa yang diprediksi? Jenis tugas (klasifikasi biner/multikelas, regresi, forecasting, clustering, dll.)? |  Target Prediksi: Label kategori berita biner, yaitu Hoaks (1) atau Valid/Non-Hoaks (0). Jenis Tugas: Supervised Learning — Binary Text Classification.  |
+| **Objective** | Apa yang dioptimalkan/diminimalkan secara matematis (misal: cross-entropy, MSE)? Metrik keberhasilan utama? |  Fungsi Logika/Rugi: Pengurangan Binary Cross-Entropy Loss (pada model Deep Learning/LSTM) dan optimasi margin/probabilitas (pada SVM dan Naive Bayes). Metrik Utama: F1-Score (karena menyeimbangkan Precision dan Recall pada kasus deteksi hoaks). |
+| **Data** | Sumber, ukuran, jenis, dan asumsi tentang data (i.i.d.? distribusi train vs test?) |  Sumber: Dataset Mendeley Data (Indonesian Fake News Dataset).Ukuran & Pembagian: Total 18.310 data (15.187 training, 1.561 validation, dan 1.562 testing). Jenis Data: Data teks tunggal/artikel berita berbahasa Indonesia berlabel. Asumsi: Data dianggap terdistribusi identik dan independen (i.i.d.) pada pembagian train-val-test dengan distribusi kelas yang representatif.  |
 
 ### 3.3 Goals
 
