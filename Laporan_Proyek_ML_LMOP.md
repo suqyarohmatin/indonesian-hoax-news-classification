@@ -4,16 +4,18 @@
 **Judul Proyek:**  
 [Klasifikasi Berita Hoaks Berbahasa Indonesia Menggunakan Machine Learning dan Deep Learning]
 
-**Nama Mahasiswa:** [Nama Lengkap]  
-**NIM:** [Nomor Induk Mahasiswa]  
-**Program Studi:** [Teknologi Informasi / Rekayasa Perangkat Lunak]  
-**Mata Kuliah:** [Nama Mata Kuliah]  
-**Dosen Pengampu:** [Nama Dosen]  
-**Tahun Akademik:** [Tahun/Semester]  
-**Link GitHub Repository:** [URL Repository]  
+**Anggota Kelompok:** 
+[1. Rayyan Afif / 244311025
+2. Suqya Rohmatin / 244311028]  
+
+**Program Studi:** [Teknologi Rekayasa Perangkat Lunak]  
+**Mata Kuliah:** [Data Science]  
+**Dosen Pengampu:** [Gus Nanang Syaifuddiin, S.Kom., M.Kom.]  
+**Tahun Akademik:** [2026/2027]  
+**Link GitHub Repository:** [https://github.com/suqyarohmatin/indonesian-hoax-news-classification]  
 **Link Video Pembahasan:** [URL Video (YouTube/Drive)]  
-**SDG yang Dipilih:** [Nomor & nama Goal, misal: SDG 3 – Kehidupan Sehat dan Sejahtera]  
-**Target SDG yang Relevan:** [misal: Target 3.4 – mengurangi kematian dini akibat penyakit tidak menular]
+**SDG yang Dipilih:** [SDG 16: Perdamaian, Keadilan, dan Kelembagaan yang Tangguh]  
+**Target SDG yang Relevan:** [Target: 16.10, yaitu menjamin akses publik terhadap informasi serta melindungi kebebasan fundamental.]
 
 ---
 
