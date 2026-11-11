@@ -40,7 +40,26 @@ Hasil model hanya digunakan sebagai alat bantu awal, bukan pengganti proses veri
 | Input | Teks berita atau klaim |
 | Output | Prediksi kategori berita |
 
-## 5. Objective dan Metrik Evaluasi
+## 5. Metode Penelitian
+
+Penelitian ini menggunakan **metode eksperimen komparatif (Comparative Experiment)** dengan pendekatan **Supervised Learning** untuk klasifikasi teks (*Text Classification*).
+
+Metode ini digunakan untuk melakukan eksperimen dan membandingkan performa tiga algoritma dalam mengklasifikasikan berita berbahasa Indonesia ke dalam kategori hoaks dan non-hoaks.
+
+### Tahapan Penelitian
+
+1. **Pengumpulan Data:** Menggunakan dataset berita hoaks berbahasa Indonesia dari Mendeley Data.
+2. **Preprocessing Data:** Melakukan pembersihan dan persiapan teks sebelum digunakan dalam pemodelan.
+3. **Pemodelan:** Menerapkan tiga algoritma, yaitu:
+   - Multinomial Naive Bayes dengan TF-IDF.
+   - Support Vector Machine (SVM) dengan TF-IDF.
+   - Long Short-Term Memory (LSTM).
+4. **Evaluasi Model:** Mengukur performa setiap model menggunakan F1-Score, Accuracy, Precision, Recall, dan Confusion Matrix.
+5. **Perbandingan Model:** Membandingkan hasil evaluasi untuk mengetahui model dengan performa terbaik.
+
+Hasil penelitian diharapkan dapat menunjukkan perbedaan performa ketiga algoritma dalam mengklasifikasikan berita hoaks berbahasa Indonesia.
+
+## 6. Objective dan Metrik Evaluasi
 
 **Tujuan:** Membangun dan membandingkan model Machine Learning dan Deep Learning untuk mengklasifikasikan berita hoaks berbahasa Indonesia.
 
@@ -52,7 +71,7 @@ Metrik evaluasi:
 - **Recall:** Mengukur kemampuan model menemukan berita hoaks.
 - **Confusion Matrix:** Menampilkan jumlah prediksi benar dan salah.
 
-## 6. Dataset
+## 7. Dataset
 
 | Komponen | Keterangan |
 |---|---|
@@ -67,7 +86,7 @@ Metrik evaluasi:
 
 Dataset merupakan kumpulan teks berita berbahasa Indonesia yang telah melalui proses preprocessing dan memiliki label klasifikasi.
 
-## 7. Rencana Tiga Model
+## 8. Rencana Tiga Model
 
 ### 1. Baseline: Multinomial Naive Bayes + TF-IDF
 
@@ -83,7 +102,7 @@ Model Deep Learning yang digunakan untuk mempelajari pola dan urutan kata dalam 
 
 Ketiga model menggunakan pembagian data dan metrik evaluasi yang sama agar perbandingan lebih adil.
 
-## 8. Risiko dan Pertimbangan Etika
+## 9. Risiko dan Pertimbangan Etika
 
 Beberapa risiko yang perlu diperhatikan:
 
@@ -100,7 +119,7 @@ Upaya mitigasi:
 - Menggunakan dataset sesuai lisensi dan ketentuan sumber.
 - Tidak menjadikan hasil prediksi sebagai keputusan final kebenaran berita.
 
-## 9. Referensi Awal
+## 10. Referensi Awal
 
 1. Jocelynne, C., Wijayakusuma, I. L., & Harini, L. P. I. (2025). Detection of Political Hoax News Using Fine-Tuning IndoBERT. *Journal of Applied Informatics and Computing, 9*(2), 354–360. [https://doi.org/10.30871/jaic.v9i2.8989](https://doi.org/10.30871/jaic.v9i2.8989)
 
