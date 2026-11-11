@@ -72,8 +72,6 @@ Implementasi proyek ini mendukung Sustainabel Development Goals(SDG 16), yaitu m
 
 ### 2.2 Keterkaitan dengan SDGs (WAJIB)
 
-Ide proyek **berasal dari mahasiswa** dan harus selaras dengan **salah satu** dari 17 Sustainable Development Goals (daftar dan contoh inspirasi ada di Lampiran A).
-
 | Komponen | Pertanyaan Panduan | Jawaban Anda |
 |----------|--------------------|--------------|
 | **SDG yang dipilih** | Goal nomor berapa dan apa namanya? |  SDG 16: Peace, Justice, and Strong Institutions (Perdamaian, Keadilan, dan Kelembagaan yang Tangguh)  |
@@ -86,25 +84,12 @@ Ide proyek **berasal dari mahasiswa** dan harus selaras dengan **salah satu** da
 **Sumber ide:** [Ide ini muncul dikarenakan seringnya saya mendengar bahwa nenek saya termakan hoaks yang ia baca dihp]
 
 ### 2.3 Ringkasan Alur Lifecycle Proyek
-Jelaskan dalam 1 paragraf pendek bagaimana proyek Anda melewati tahap L → M → O → P (dan iterasi apa yang direncanakan).
-
-**[Tulis ringkasan alur lifecycle proyek Anda]**
 
 Proyek ini dijalankan melalui alur lifecycle bertahap yang mencakup tahap L (Problem Formulation & Data Preparation), M (Modeling & Baseline Comparison), O (Optimization & Evaluation), hingga P (Deployment & Monitoring). Pada tahap L, masalah dirumuskan ke dalam kerangka binary text classification dan data berita berbahasa Indonesia diproses (cleaning, lowercasing, stopword removal, lemmatization/stemming). Pada tahap M dan O, dikembangkan tiga arsitektur model (Multinomial Naive Bayes sebagai baseline, Support Vector Machine sebagai model advanced, serta Long Short-Term Memory sebagai model Deep Learning) yang dievaluasi menggunakan F1-Score, Precision, Recall, dan Confusion Matrix. Iterasi direncanakan pada tahap pemrosesan fitur (eksperimen TF-IDF vs word embedding) serta penyesuaian hyperparameter untuk mengurangi overfitting dan bias klasifikasi.
 
 ## 3. BUSINESS UNDERSTANDING / PROBLEM UNDERSTANDING  **[L]**
 
 ### 3.1 Problem Statements
-Tuliskan 2–4 pernyataan masalah yang jelas dan spesifik.
-
-**Contoh (universal):**
-1. Model perlu mampu memprediksi nilai target dengan akurasi tinggi
-2. Sistem harus dapat mengidentifikasi pola pada citra secara otomatis
-3. Dataset memiliki noise sehingga perlu preprocessing yang tepat
-4. Dibutuhkan model deep learning yang mampu belajar representasi fitur kompleks
-
-**[Tulis problem statements Anda di sini]**
-
 1. Efisiensi Verifikasi Teks: Bagaimana membangun model klasifikasi otomatis yang dapat membedakan teks berita hoaks dan valid berbahasa Indonesia secara presisi dan cepat guna mengurangi ketergantungan pada pemeriksaan manual?
 2. Kinerja Arsitektur Model: Sejauh mana performa arsitektur Deep Learning (LSTM) dapat mengungguli metode klasik Machine Learning (Multinomial Naive Bayes dan Support Vector Machine) dalam menangkap pola kontekstual dan urutan kata pada teks berita hoaks?
 3. Penanganan Unstructured Text & Imbalance Data: Bagaimana menerapkan teknik text preprocessing dan ekstraksi fitur (TF-IDF vs Embedding) yang efektif untuk menangani noise, variasi kosakata, serta potensi ketidakseimbangan kelas (class imbalance) pada dataset berita berbahasa Indonesia?
