@@ -102,20 +102,17 @@ Rumuskan masalah dalam kerangka *Learning Problem*:
 |----------|--------------------|--------------|
 | **Target** | Apa yang diprediksi? Jenis tugas (klasifikasi biner/multikelas, regresi, forecasting, clustering, dll.)? |  Target Prediksi: Label kategori berita biner, yaitu Hoaks (1) atau Valid/Non-Hoaks (0). Jenis Tugas: Supervised Learning — Binary Text Classification.  |
 | **Objective** | Apa yang dioptimalkan/diminimalkan secara matematis (misal: cross-entropy, MSE)? Metrik keberhasilan utama? |  Fungsi Logika/Rugi: Pengurangan Binary Cross-Entropy Loss (pada model Deep Learning/LSTM) dan optimasi margin/probabilitas (pada SVM dan Naive Bayes). Metrik Utama: F1-Score (karena menyeimbangkan Precision dan Recall pada kasus deteksi hoaks). |
-| **Data** | Sumber, ukuran, jenis, dan asumsi tentang data (i.i.d.? distribusi train vs test?) |  Sumber: Dataset Mendeley Data (Indonesian Fake News Dataset).Ukuran & Pembagian: Total 18.310 data (15.187 training, 1.561 validation, dan 1.562 testing). Jenis Data: Data teks tunggal/artikel berita berbahasa Indonesia berlabel. Asumsi: Data dianggap terdistribusi identik dan independen (i.i.d.) pada pembagian train-val-test dengan distribusi kelas yang representatif.  |
+| **Data** | Sumber, ukuran, jenis, dan asumsi tentang data (i.i.d.? distribusi train vs test?) |  Sumber: Dataset Kaggle (Indonesian Fact and Hoax Political News). Ukuran & Pembagian: Dibagi secara terstruktur untuk training, validation, dan testing. Jenis Data: Teks berita dan narasi berbahasa Indonesia berlabel. Asumsi: Data diasumsikan representatif setelah melalui tahap custom cleaning untuk menghilangkan artefak sumber data.  |
 
 ### 3.3 Goals
 
 Tujuan harus spesifik, terukur, dan selaras dengan problem statement.
 **Contoh tujuan:**
-1. Membangun model ML untuk memprediksi variabel target dengan akurasi > 80%
+1. Membangun model ML untuk memprediksi berita hoaks berdasrakan pola kalimat dengan akurasi > 85%
 2. Mengukur performa tiga pendekatan model (baseline, advanced, deep learning)
-3. Menentukan model terbaik berdasarkan metrik evaluasi yang relevan
+3. Menentukan model terbaik berdasarkan evaluasi test set yang paling andal untuk diimplementasikan.
 4. Menghasilkan sistem yang dapat bekerja secara reproducible
-
-> Sertakan minimal satu goal yang menunjukkan kontribusi terhadap target SDG yang dipilih (Bab 2.2).
-
-**[Tulis goals Anda di sini]**
+5. Mendukung target SDG 16.10 dengan menyediakan sistem penyaringan awal informasi hoaks untuk meningkatkan akses publik terhadap informasi yang valid
 
 ### 3.4 Solution Approach  **[M]**
 
@@ -123,53 +120,30 @@ Mahasiswa **WAJIB** menggunakan minimal **tiga model** dengan komposisi sebagai 
 #### **Model 1 – Baseline Model**
 Model sederhana sebagai pembanding dasar.
 **Pilihan model:**
-- Linear Regression (untuk regresi)
-- Logistic Regression (untuk klasifikasi)
-- K-Nearest Neighbors (KNN)
-- Decision Tree
-- Naive Bayes
+- Multinomial Naive Bayes
 
-**[Jelaskan model baseline yang Anda pilih dan alasannya]**
+**[Alasan Pemilihan]**
+Pembanding yang cepat dan efisien untuk klasifikasi teks berbasis probabilitas.
 
 #### **Model 2 – Advanced / ML Model**
 Model machine learning yang lebih kompleks.
 **Pilihan model:**
-- Random Forest
-- Gradient Boosting (XGBoost, LightGBM, CatBoost)
 - Support Vector Machine (SVM)
-- Ensemble methods
-- Clustering (K-Means, DBSCAN) - untuk unsupervised
-- PCA / dimensionality reduction (untuk preprocessing)
 
-**[Jelaskan model advanced yang Anda pilih dan alasannya]**
+**[Alasan Pemilihan]**
+Kemampuan yang baik dalam mencari _hyperline_ pemisah optimal pada ruang fitur teks.
 
 #### **Model 3 – Deep Learning Model (WAJIB)**
 Model deep learning yang sesuai dengan jenis data.
 **Pilihan Implementasi (pilih salah satu sesuai dataset):**
-**A. Tabular Data:**
-- Multilayer Perceptron (MLP) / Neural Network
-- Minimum: 2 hidden layers
-- Contoh: prediksi harga, klasifikasi binary/multiclass
 
-**B. Image Data:**
-- CNN sederhana (minimum 2 convolutional layers) **ATAU**
-- Transfer Learning (ResNet, VGG, MobileNet, EfficientNet) - **recommended**
-- Contoh: klasifikasi gambar, object detection
+**Text Data:**
+- Long Short-Term Memory (LSTM)
+- Embedding + Dense Layers
 
-**C. Text Data:**
-- LSTM/GRU (minimum 1 layer) **ATAU**
-- Embedding + Dense layers **ATAU**
-- Pre-trained model (BERT, DistilBERT, Word2Vec)
-- Contoh: sentiment analysis, text classification
+**[Alasan Pemilihan]**
+Karena LSTM mampu memproses data teks secara berurutan. Arsitektur ini memiliki _memory cell_ yang dapat mengingat konteks dan hubungan antar kata dalam satu kalimat maupun antar kalimat, sehingga efektif untuk mengenali pola kalimat dan gaya bahasa khas berita hoaks
 
-**D. Time Series:**
-- LSTM/GRU untuk sequential prediction
-- Contoh: forecasting, anomaly detection
-
-**E. Recommender Systems:**
-- Neural Collaborative Filtering (NCF)
-- Autoencoder-based Collaborative Filtering
-- Deep Matrix Factorization
 
 **Minimum Requirements untuk Deep Learning:**
 - ✅ Model harus training minimal 10 epochs
@@ -181,10 +155,6 @@ Model deep learning yang sesuai dengan jenis data.
 - ❌ Copy-paste kode tanpa pemahaman
 - ❌ Model tidak di-train (hanya define arsitektur)
 - ❌ Tidak ada evaluasi pada test set
-
-**[Jelaskan model deep learning yang Anda pilih dan alasannya]**
-
----
 
 ## 4. DATA UNDERSTANDING  **[L]**
 ### 4.1 Informasi Dataset
