@@ -75,8 +75,8 @@ Metrik evaluasi:
 
 | Komponen | Keterangan |
 |---|---|
-| Sumber | Mendeley Data |
-| URL | [Dataset Berita Hoaks Indonesia](https://data.mendeley.com/datasets/mzx5rd397v/1) |
+| Sumber | Kaggle |
+| URL | [Dataset Berita Hoaks Indonesia]([https://data.mendeley.com/datasets/mzx5rd397v/1](https://www.kaggle.com/datasets/linkgish/indonesian-fact-and-hoax-political-news)) |
 | Total Data | 18.310 |
 | Training | 15.187 |
 | Validation | 1.561 |
