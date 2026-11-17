@@ -158,11 +158,6 @@ Karena LSTM mampu memproses data teks secara berurutan. Arsitektur ini memiliki 
 
 ## 4. DATA UNDERSTANDING  **[L]**
 ### 4.1 Informasi Dataset
-
-# 4. DATA UNDERSTANDING
-
-## 4.1 Informasi Dataset
-
 **Sumber Dataset:**  
 [Indonesian Fact and Hoax Political News - Kaggle](https://www.kaggle.com/datasets/linkgish/indonesian-fact-and-hoax-political-news)
 
