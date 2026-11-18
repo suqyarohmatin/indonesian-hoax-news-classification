@@ -604,11 +604,11 @@ Membagi dataset menjadi tiga bagian, yaitu training, validation, dan test dengan
 Hasil pembagian data:
 
 | Jenis data | Persentase | Jumlah sampel |
-|---|---:|---:|
-| Training | 70% | 21.924 |
-| Validation | 15% | 4.698 |
-| Test | 15% | 4.699 |
-| **Total** | **100%** | **31.321** |
+| ---------- | ---------- | ------------- |
+| Training   | 70%        | 21.930        |
+| Validation | 15%        | 4.699         |
+| Test       | 15%        | 4.700         |
+| **Total**  | **100%**   | **31.329**    |
 
 **Mengapa dilakukan?**
 
@@ -628,40 +628,6 @@ Parameter yang digunakan:
 
 Data training digunakan untuk mempelajari model, validation disiapkan untuk pemilihan dan penyetelan model, sedangkan test disiapkan untuk evaluasi akhir.
 
-### 5. Data Balancing
-
-**Apa yang dilakukan?**
-
-Menghitung bobot untuk masing-masing kelas menggunakan teknik Class Weight.
-
-Berdasarkan data training, distribusi kelas adalah:
-
-| Kelas | Jumlah data |
-|---|---:|
-| Valid (0) | 14.661 |
-| Hoaks (1) | 7.263 |
-| **Total** | **21.924** |
-
-Hasil perhitungan bobot kelas:
-
-| Kelas | Bobot |
-|---|---:|
-| Valid (0) | 0,7477 |
-| Hoaks (1) | 1,5093 |
-
-**Mengapa dilakukan?**
-
-Class Weight digunakan untuk membantu mengatasi ketidakseimbangan kelas dengan memberikan bobot lebih besar kepada kelas yang memiliki jumlah data lebih sedikit.
-
-Dalam dataset ini, berita hoaks merupakan kelas minoritas. Oleh karena itu, kelas hoaks memperoleh bobot yang lebih besar dibandingkan kelas valid.
-
-**Bagaimana implementasinya?**
-
-Implementasi menggunakan fungsi `compute_class_weight()` dari Scikit-learn dengan parameter `class_weight='balanced'`.
-
-Perhitungan dilakukan hanya menggunakan label pada data training (`y_train`). Hasilnya kemudian disimpan dalam variabel `class_weight_dict` agar dapat digunakan pada tahap pelatihan model berikutnya.
-
-Class Weight tidak menambah atau mengurangi jumlah sampel, tetapi menyiapkan bobot yang digunakan ketika model dilatih.
 
 ### Kesimpulan Data Preparation
 
