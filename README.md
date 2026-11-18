@@ -432,16 +432,16 @@ Konversi tipe data dilakukan untuk memastikan kolom `Timestamp` menjadi tipe dat
 | Data awal                                           | 31.353     |
 | Data dihapus karena missing value pada kolom wajib | 21         |
 | Data setelah penanganan missing value               | 31.332     |
-| Data duplikat yang dihapus                          | 4          |
-| **Data setelah cleaning**                           | **31.328** |
+| Data duplikat yang dihapus                          | 3          |
+| **Data setelah cleaning**                           | **31.329** |
 
 Distribusi label setelah proses cleaning:
 
 | Kelas     | Jumlah     | Persentase |
 | --------- | ---------- | ---------- |
-| Valid (0) | 20.941     | 66,88%     |
-| Hoaks (1) | 10.377     | 33,12%     |
-| **Total** | **31.328** | **100%**   |
+| Valid (0) | 20.951     | 66,86%     |
+| Hoaks (1) | 10.378     | 33,14%     |
+| **Total** | **31.329** | **100%**   |
 
 ## 5.2 Feature Engineering
 
