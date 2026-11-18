@@ -353,28 +353,33 @@ Namun, notebook saat ini belum menghasilkan tiga visualisasi grafis. Oleh karena
 Beberapa visualisasi yang dapat digunakan pada penelitian ini adalah:
 
 ### Visualisasi 1: Distribusi Kelas Berita Valid dan Hoaks
+<img width="871" height="622" alt="image" src="https://github.com/user-attachments/assets/6280864a-88a5-43e5-93e9-ff09c458992f" />
+
 
 **Status:** Data distribusi sudah diperiksa melalui tabel jumlah kelas, tetapi grafik belum dibuat.
 
 **Insight berdasarkan hasil aktual:**
 
-Jumlah berita valid sebanyak 20.972 atau 66,89%, sedangkan berita hoaks sebanyak 10.381 atau 33,11%. Hal ini menunjukkan bahwa dataset memiliki ketidakseimbangan kelas dengan jumlah berita valid sebagai kelas mayoritas.
+Berdasarkan visualisasi distribusi kelas, jumlah berita valid sebanyak 20.972 data atau 66,89%, sedangkan berita hoaks sebanyak 10.381 data atau 33,11%. Hal ini menunjukkan bahwa dataset memiliki ketidakseimbangan kelas (imbalanced data), dengan jumlah berita valid sebagai kelas mayoritas. Kondisi tersebut perlu diperhatikan dalam proses pelatihan model agar model tidak terlalu dominan memprediksi kelas mayoritas.
 
 ### Visualisasi 2: Distribusi Jumlah Kata dalam Artikel
+<img width="990" height="620" alt="image" src="https://github.com/user-attachments/assets/444527e0-1fb6-447a-b93c-c62c77655923" />
+
 
 **Status:** Pemeriksaan panjang teks sudah dilakukan melalui metode IQR, tetapi histogram atau boxplot belum dibuat.
 
 **Insight berdasarkan hasil aktual:**
-
-Ditemukan 1.756 data yang terindikasi sebagai outlier berdasarkan jumlah kata pada kolom `FullText`. Data tersebut tetap dipertahankan karena panjang artikel tidak selalu menunjukkan kualitas atau kebenaran informasi.
+Berdasarkan visualisasi Boxplot, kedua kategori berita memiliki variasi panjang teks yang cukup besar. Terdapat sejumlah data dengan jumlah kata jauh lebih tinggi dibandingkan sebagian besar data lainnya. Hal tersebut menunjukkan adanya data yang berpotensi menjadi outlier. Pada kategori hoaks terlihat nilai ekstrem yang lebih tinggi dibandingkan kategori valid. Meskipun demikian, panjang teks tidak dapat dijadikan indikator untuk menentukan kebenaran suatu berita.
 
 ### Visualisasi 3: Distribusi Kelas Berdasarkan Sumber Dataset
+<img width="1119" height="616" alt="image" src="https://github.com/user-attachments/assets/de14ca07-0f3b-4c0a-821b-c52251b4f6bb" />
+
 
 **Status:** Pemeriksaan sudah dilakukan menggunakan tabel silang (*cross tabulation*), tetapi grafik belum dibuat.
 
 **Insight berdasarkan hasil aktual:**
 
-CNN Indonesia, Kompas, dan Tempo seluruhnya memiliki label valid, sedangkan TurnBackHoax seluruhnya memiliki label hoaks. Hal ini menunjukkan adanya keterkaitan antara sumber dataset dengan label klasifikasi yang dapat menimbulkan bias pada proses pemodelan.
+Berdasarkan visualisasi distribusi kelas berdasarkan sumber dataset, CNN Indonesia, Kompas, dan Tempo seluruhnya memiliki label valid, sedangkan TurnBackHoax seluruhnya memiliki label hoaks. Hal ini menunjukkan bahwa terdapat keterkaitan yang sangat kuat antara sumber dataset dan label klasifikasi. Kondisi tersebut berpotensi menimbulkan bias karena model dapat mempelajari karakteristik penulisan atau format artikel dari sumber berita, bukan benar-benar mengenali karakteristik berita hoaks dan valid.
 
 > **Catatan:** Karena EDA bersifat opsional, hasil pemeriksaan tabel di atas dapat dijelaskan dalam laporan. Namun, apabila dosen meminta minimal tiga grafik, visualisasi tersebut harus dibuat terlebih dahulu sebelum gambar dan hasilnya dicantumkan dalam laporan.
 
