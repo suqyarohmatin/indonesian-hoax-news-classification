@@ -189,6 +189,9 @@ Penggabungan dilakukan menggunakan bahasa Python dengan library Pandas. Setiap d
 | Target prediksi                          | `hoax`                     |
 | Label 0                                  | Berita valid/non-hoaks     |
 | Label 1                                  | Berita hoaks               |
+|Total empat file XLSX dalam folder Cleaned| 33,56 MB                   |
+|Jumlah data gabungan                      | 31.353 baris               |
+|Jumlah kolom setelah penggabungan         | 13 Kolom                   |
 
 Dataset termasuk data teks tidak terstruktur (*unstructured text*) karena informasi utama yang digunakan dalam proses klasifikasi berupa judul dan isi artikel. Selain itu, dataset juga memiliki beberapa kolom metadata seperti waktu publikasi, penulis, tag, URL, dan sumber berita.
 
