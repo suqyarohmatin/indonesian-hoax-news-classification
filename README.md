@@ -221,7 +221,6 @@ Berikut deskripsi kolom berdasarkan hasil penggabungan dataset:
 Fitur utama yang direncanakan untuk proses klasifikasi adalah:
 
 - `Title`: judul artikel.
-- `FullText`: isi artikel.
 - `hoax`: label target klasifikasi.
 
 Judul dan isi artikel digabungkan menjadi satu fitur teks baru bernama `text_raw`. Selanjutnya, teks tersebut dibersihkan dan disimpan dalam kolom `text_clean` sebagai input utama untuk proses pemodelan.
@@ -390,15 +389,15 @@ Tahapan yang dilakukan meliputi:
 
 ### 1. Handling Missing Values
 
-Pada pemeriksaan awal ditemukan 21 nilai kosong pada kolom `Title` dan 27 nilai kosong pada kolom `FullText`.
+Pada pemeriksaan awal ditemukan 21 nilai kosong pada kolom `Title`, `Timestamp`, dan `FullText`.
 
-Strategi yang digunakan adalah menghapus baris yang memiliki nilai kosong pada kolom `Title`, `FullText`, atau `hoax` menggunakan fungsi `dropna()`.
+Strategi yang digunakan adalah menghapus baris yang memiliki nilai kosong pada kolom `Title` menggunakan fungsi `dropna()`.
 
-Penghapusan dipilih karena judul dan isi berita merupakan informasi utama yang dibutuhkan untuk proses klasifikasi. Apabila kedua kolom tersebut kosong, data tidak dapat memberikan informasi teks yang memadai.
+Penghapusan dipilih karena judul dan merupakan informasi utama yang dibutuhkan untuk proses klasifikasi. Apabila kedua kolom tersebut kosong, data tidak dapat memberikan informasi teks yang memadai.
 
-Hasilnya, sebanyak 27 baris data dihapus sehingga jumlah data berkurang dari 31.353 menjadi 31.326 baris.
+Hasilnya, sebanyak 21 baris data dihapus sehingga jumlah data berkurang dari 31.353 menjadi 31.332 baris.
 
-Nilai kosong pada kolom metadata yang tidak digunakan sebagai fitur utama tidak diisi karena tidak diperlukan dalam proses pemodelan.
+Nilai kosong pada kolom yang lain yang tidak digunakan sebagai fitur utama tidak diisi karena tidak diperlukan dalam proses pemodelan.
 
 ### 2. Removing Duplicates
 
@@ -408,83 +407,44 @@ Sebelum dibandingkan, teks pada kolom `Title` dan `FullText` diubah menjadi huru
 
 Penghapusan dilakukan menggunakan fungsi `drop_duplicates()`.
 
-Hasilnya, ditemukan dan dihapus 5 data duplikat. Jumlah data setelah proses ini menjadi 31.321 baris.
+Hasilnya, ditemukan dan dihapus 4 data duplikat. Jumlah data setelah proses ini menjadi 31.328 baris.
 
 ### 3. Handling Outliers
 
-Pemeriksaan outlier dilakukan berdasarkan jumlah kata pada kolom `FullText`.
-
-Metode yang digunakan adalah *Interquartile Range* (IQR), yaitu metode untuk menentukan data yang berada di luar rentang umum distribusi.
-
-Hasil pemeriksaan menemukan 1.756 data yang terindikasi sebagai outlier dengan batas bawah 13,5 kata dan batas atas 633,5 kata.
-
-Data tersebut tidak dihapus karena panjang artikel yang berbeda tidak selalu menunjukkan kesalahan data. Artikel pendek maupun panjang masih dapat mengandung informasi yang relevan.
+Pemeriksaan outlier tidak dilakukan.
 
 ### 4. Data Type Conversion
 
-Konversi tipe data dilakukan untuk memastikan kolom utama memiliki tipe data yang sesuai.
-
-Kolom `Title` dan `FullText` dikonversi menjadi tipe data teks atau string, sedangkan kolom `hoax` dipastikan berupa angka bertipe integer.
-
-Hal ini diperlukan agar proses pembersihan teks dan pengolahan label dapat dilakukan dengan benar.
+Konversi tipe data dilakukan untuk memastikan kolom `Timestamp` menjadi tipe data datetime.
 
 **Hasil akhir Data Cleaning:**
 
 | Keterangan                                          | Jumlah     |
 | --------------------------------------------------- | ---------- |
 | Data awal                                           | 31.353     |
-| Data dihapus karena missing value pada kolom wajib | 27         |
-| Data setelah penanganan missing value               | 31.326     |
-| Data duplikat yang dihapus                          | 5          |
-| **Data setelah cleaning**                           | **31.321** |
+| Data dihapus karena missing value pada kolom wajib | 21         |
+| Data setelah penanganan missing value               | 31.332     |
+| Data duplikat yang dihapus                          | 4          |
+| **Data setelah cleaning**                           | **31.328** |
 
 Distribusi label setelah proses cleaning:
 
 | Kelas     | Jumlah     | Persentase |
 | --------- | ---------- | ---------- |
-| Valid (0) | 20.945     | 66,87%     |
-| Hoaks (1) | 10.376     | 33,13%     |
-| **Total** | **31.321** | **100%**   |
+| Valid (0) | 20.941     | 66,88%     |
+| Hoaks (1) | 10.377     | 33,12%     |
+| **Total** | **31.328** | **100%**   |
 
 ## 5.2 Feature Engineering
 
-Feature engineering dilakukan untuk membentuk fitur baru yang dapat digunakan sebagai input dalam proses klasifikasi berita.
+Feature engineering dilakukan untuk membentuk menghapus fitur yang tidak diperlukan.
 
 Tahapan yang dilakukan adalah sebagai berikut:
 
-### 1. Menghapus Penanda pada Awal Judul
+### Menghapus fitur selain fitur `Title` dan `hoax`
+Hal ini dilakukan untuk memastikan data yang akan digunakan relevan dengan tujuan dan juga mencegah overfitting khususnya di fitur `Timestamp` dan `Source`. pada fitur `Timestamp` persebaran data tidak merata, ditakutkan akan mempengaruhi kinerja model yang dapat menentukan kebenaran suatu beruta berdasarkan bulan rilis berita tersebut. 
 
-Pada dataset TurnBackHoax terdapat penanda kategori di awal judul, seperti `[SALAH]`, `[BENAR]`, dan `[HOAX]`.
-
-Penanda tersebut dihapus dari awal judul karena dapat memberikan petunjuk langsung mengenai kategori berita kepada model.
-
-Proses ini menghasilkan kolom baru bernama `judul_tanpa_penanda`.
-
-Penghapusan dilakukan menggunakan regular expression atau Regex.
-
-### 2. Menggabungkan Judul dan Isi Berita
-
-Kolom `Title` dan `FullText` digabungkan menjadi satu kolom baru bernama `text_raw`.
-
-Penggabungan dilakukan agar model dapat memperoleh informasi dari judul sekaligus isi artikel, bukan hanya salah satunya.
-
-### 3. Membuat Fitur Tambahan
-
-Selain menggabungkan teks, dibuat dua fitur tambahan, yaitu:
-
-- `jumlah_karakter`: menghitung jumlah karakter dalam teks berita.
-- `jumlah_kata`: menghitung jumlah kata dalam teks berita.
-
-Fitur tersebut digunakan untuk mengetahui karakteristik panjang teks. Namun, pada notebook ini kedua fitur tersebut belum digunakan sebagai input utama model.
-
-### 4. Memisahkan Input dan Target
-
-Setelah fitur teks terbentuk, dilakukan pemisahan antara variabel input dan target.
-
-- `X` merupakan variabel input yang berisi teks berita.
-- `y` merupakan variabel target yang berisi label `hoax`.
-
-Input akhir diperbarui menjadi `text_clean` setelah melewati tahap data transformation.
+Adapun fitur `FullText` dan `Clean_Narasi`, kedua fitur tsb adalah penjelasan dari fitur `Title` alasan dihapus karena perbedaan isi dari 2 fitur tsb. di fitur `Clean_Narasi` berisi komentar publik, opini publik di berbagai media sosial, untuk fitur `FullText` berisikan isi dari berita tersebut.
 
 ## 5.3 Data Transformation
 
@@ -494,78 +454,11 @@ Karena penelitian menggunakan data teks, transformasi yang dilakukan disesuaikan
 
 ### 1. Text Cleaning
 
-Sebelum teks diubah menjadi angka, dilakukan pembersihan teks menggunakan fungsi `clean_text()`.
+Menghapus tags yang berisi kata [SALAH], [MISINFORMASI], dan tags-tags lainnya guna menjauhi kemungkinan overfitting
 
-Langkah-langkah yang dilakukan meliputi:
+### 2. Text LowerCasing
 
-- **Lowercasing:** mengubah seluruh huruf menjadi huruf kecil.
-- **Removing URL:** menghapus alamat URL dari teks.
-- **Removing HTML tags:** menghapus tag HTML.
-- **Removing punctuation and symbols:** menghapus tanda baca dan simbol yang tidak diperlukan.
-- **Removing extra whitespace:** merapikan spasi berlebih.
-
-Hasil dari proses ini disimpan dalam kolom `text_clean`.
-
-Proses ini dilakukan agar format teks menjadi lebih konsisten dan mengurangi karakter yang tidak diperlukan dalam pemodelan.
-
-Pada tahap ini belum dilakukan penghapusan stopwords, stemming, lemmatization, maupun penggunaan Word2Vec, GloVe, atau fastText.
-
-### 2. TF-IDF untuk Naive Bayes dan SVM
-
-Untuk algoritma Multinomial Naive Bayes dan Support Vector Machine (SVM), teks diubah menjadi bentuk numerik menggunakan metode Term Frequency-Inverse Document Frequency (TF-IDF).
-
-TF-IDF digunakan untuk memberikan bobot pada kata berdasarkan frekuensi kemunculan kata dalam dokumen dan tingkat keumumannya dalam keseluruhan kumpulan dokumen.
-
-Parameter yang digunakan adalah:
-
-| Parameter      | Nilai  | Keterangan                                    |
-| -------------- | ------ | --------------------------------------------- |
-| `max_features` | 20.000 | Membatasi jumlah fitur atau kosakata maksimum |
-| `ngram_range`  | (1, 2) | Menggunakan unigram dan bigram                |
-
-Unigram merupakan fitur satu kata, sedangkan bigram merupakan kombinasi dua kata yang berurutan.
-
-Proses `fit_transform()` hanya dilakukan pada data training untuk membentuk kosakata dan bobot TF-IDF. Sementara itu, data validation dan test hanya diubah menggunakan `transform()` dari hasil training.
-
-Strategi ini digunakan untuk menghindari kebocoran informasi dari data validation dan test ke dalam proses pembentukan fitur.
-
-**Hasil transformasi TF-IDF:**
-
-| Jenis data | Jumlah sampel | Jumlah fitur |
-| ---------- | ------------- | ------------ |
-| Training   | 21.924        | 20.000       |
-| Validation | 4.698         | 20.000       |
-| Test       | 4.699         | 20.000       |
-
-### 3. Tokenization dan Padding untuk LSTM
-
-Untuk algoritma Long Short-Term Memory (LSTM), teks diubah menjadi urutan angka menggunakan proses tokenisasi.
-
-Tokenisasi dilakukan menggunakan `Tokenizer` dari TensorFlow Keras.
-
-Parameter yang digunakan adalah:
-
-| Parameter    | Nilai   | Keterangan                            |
-| ------------ | ------- | ------------------------------------- |
-| `MAX_WORDS`  | 20.000  | Batas jumlah kata dalam kamus         |
-| `MAX_LEN`    | 300     | Panjang maksimum urutan angka         |
-| `oov_token`  | `<OOV>` | Penanda untuk kata yang tidak dikenal |
-| `padding`    | `post`  | Menambahkan angka nol di akhir urutan |
-| `truncating` | `post`  | Memotong urutan berlebih dari bagian akhir |
-
-Tokenizer dipelajari hanya dari data training. Setelah itu, data training, validation, dan test diubah menjadi urutan angka menggunakan kamus yang sama.
-
-Selanjutnya dilakukan padding untuk menyamakan panjang setiap urutan menjadi 300 angka. Proses ini diperlukan agar seluruh data memiliki panjang input yang seragam ketika digunakan oleh LSTM.
-
-**Hasil transformasi untuk LSTM:**
-
-| Jenis data | Bentuk data   |
-| ---------- | ------------- |
-| Training   | (21.924, 300) |
-| Validation | (4.698, 300)  |
-| Test       | (4.699, 300)  |
-
-Dengan demikian, penelitian menggunakan dua pendekatan transformasi teks, yaitu TF-IDF untuk Naive Bayes dan SVM, serta tokenisasi dan padding untuk LSTM.
+Mengubah seluruh fitur `Title` menjadi huruf kecil
 
 ## 5.4 Data Splitting
 
@@ -575,77 +468,44 @@ Strategi yang digunakan adalah pembagian data dengan perbandingan 70:15:15.
 
 | Jenis data | Persentase | Jumlah sampel |
 | ---------- | ---------- | ------------- |
-| Training   | 70%        | 21.924        |
-| Validation | 15%        | 4.698         |
-| Test       | 15%        | 4.699         |
-| **Total**  | **100%**   | **31.321**    |
+| Training   | 70%        | 21.897        |
+| Validation | 15%        | 4.692         |
+| Test       | 15%        | 4.693         |
+| **Total**  | **100%**   | **31.282**    |
 
-Pembagian dilakukan menggunakan fungsi `train_test_split()` dari library Scikit-learn.
+Pembagian data dilakukan menggunakan fungsi train_test_split() dari library Scikit-learn melalui dua tahap pembagian. Tahap pertama memisahkan 70% data training dan 30% data sementara. Selanjutnya, data sementara dibagi kembali menjadi data validation dan testing dengan perbandingan yang sama.
 
-Metode `stratify` digunakan untuk mempertahankan proporsi kelas valid dan hoaks pada masing-masing bagian data.
-
-Selain itu, digunakan `random_state=42` agar proses pembagian data dapat menghasilkan hasil yang konsisten ketika kode dijalankan kembali.
-
-Data training digunakan untuk proses pembelajaran model. Data validation disiapkan untuk membantu pemilihan dan penyetelan model pada tahap berikutnya, sedangkan data test disiapkan untuk evaluasi akhir.
-
-Pembentukan kosakata TF-IDF dan tokenizer hanya dipelajari dari data training. Data validation dan test hanya ditransformasikan menggunakan hasil yang diperoleh dari training untuk menghindari data leakage.
+Metode stratify digunakan untuk mempertahankan proporsi kelas bukan hoaks dan hoaks pada masing-masing bagian data. Selain itu, digunakan random_state=42 agar proses pembagian data menghasilkan pembagian yang konsisten ketika kode dijalankan kembali.
 
 ## 5.5 Data Balancing
 
-Data balancing dilakukan untuk menangani ketidakseimbangan jumlah data antara kelas berita valid dan berita hoaks.
-
-Berdasarkan hasil pembagian data, distribusi kelas pada data training adalah sebagai berikut:
-
-| Kelas     | Jumlah data training |
-| --------- | -------------------- |
-| Valid (0) | 14.661               |
-| Hoaks (1) | 7.263                |
-| **Total** | **21.924**           |
-
-Jumlah data valid lebih banyak dibandingkan jumlah data hoaks. Oleh karena itu, digunakan pendekatan *Class Weight*.
-
-Class Weight merupakan teknik yang memberikan bobot berbeda terhadap masing-masing kelas ketika model melakukan proses pembelajaran. Kelas yang jumlah datanya lebih sedikit diberikan bobot lebih besar agar model memberikan perhatian yang lebih terhadap kelas tersebut.
-
-Perhitungan bobot dilakukan menggunakan fungsi `compute_class_weight()` dari Scikit-learn dengan parameter `class_weight='balanced'`.
-
-Hasil perhitungan bobot kelas adalah:
-
-| Kelas     | Bobot  |
-| --------- | ------ |
-| Valid (0) | 0,7477 |
-| Hoaks (1) | 1,5093 |
-
-Berdasarkan hasil tersebut, kelas hoaks memperoleh bobot lebih besar dibandingkan kelas valid karena jumlah datanya lebih sedikit.
-
-Pada notebook ini, bobot kelas telah dihitung dan disimpan dalam variabel `class_weight_dict` untuk digunakan pada tahap pelatihan model berikutnya.
-
-> **Catatan:** Class Weight tidak mengubah jumlah data atau menambahkan sampel baru. Teknik ini hanya menyiapkan bobot yang nantinya digunakan ketika model dilatih.
+Data balancing tidak dilakukan karena data yang tidak terlalu menimpang.
 
 ## 5.6 Ringkasan Data Preparation
 
-Tahapan data preparation dilakukan untuk memastikan data memiliki kualitas dan format yang sesuai sebelum digunakan dalam proses pemodelan.
+## 5.6 Ringkasan Data Preparation
 
-Berikut ringkasan proses yang dilakukan:
+Tahapan data preparation dilakukan untuk memastikan dataset memiliki kualitas, struktur, dan format yang sesuai sebelum digunakan dalam proses pemodelan. Proses ini meliputi data cleaning, feature engineering, data transformation, data splitting, dan data balancing.
 
-| Tahapan             | Apa yang dilakukan?                                                                                                     | Mengapa dilakukan?                                                                    | Bagaimana implementasinya?                                                             |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Data Cleaning       | Menangani missing values, menghapus duplikat, memeriksa outlier, dan mengonversi tipe data                              | Memastikan data yang digunakan memiliki informasi yang memadai dan format yang sesuai | Menggunakan `dropna()`, `drop_duplicates()`, metode IQR, dan konversi tipe data Pandas |
-| Feature Engineering | Menghapus penanda kategori pada judul, menggabungkan judul dan isi berita, serta membuat fitur jumlah kata dan karakter | Menghasilkan fitur teks yang lebih sesuai untuk proses klasifikasi                    | Menggunakan `str.replace()`, penggabungan kolom, `str.len()`, dan `str.split()`        |
-| Data Transformation | Membersihkan teks dan mengubah teks menjadi bentuk numerik                                                              | Algoritma Machine Learning dan Deep Learning membutuhkan input dalam bentuk numerik   | Menggunakan Regex, TF-IDF, Tokenizer, dan Padding                                      |
-| Data Splitting      | Membagi data menjadi training, validation, dan test                                                                     | Memisahkan data untuk pembelajaran, validasi, dan evaluasi akhir                      | Menggunakan `train_test_split()` dengan stratified split dan random state 42           |
-| Data Balancing      | Menghitung bobot masing-masing kelas                                                                                    | Membantu mengurangi dampak ketidakseimbangan kelas ketika model dilatih               | Menggunakan `compute_class_weight()` dengan metode balanced                            |
+Berikut merupakan ringkasan tahapan data preparation yang dilakukan:
+
+| Tahapan | Apa yang dilakukan? | Mengapa dilakukan? | Bagaimana implementasinya? |
+|---|---|---|---|
+| Data Cleaning | Menangani missing values, menghapus data duplikat, dan melakukan konversi tipe data Timestamp menjadi datetime | Memastikan data memiliki informasi yang memadai, mengurangi redundansi, dan menjaga kesesuaian tipe data | Menggunakan `dropna()`, `drop_duplicates()`, dan `pd.to_datetime()` |
+| Feature Engineering | Memilih fitur `Title` sebagai fitur utama dan `hoax` sebagai target klasifikasi serta menghapus fitur yang tidak digunakan | Memusatkan proses klasifikasi pada judul berita dan menghindari penggunaan fitur yang berpotensi menimbulkan bias | Menggunakan pemilihan kolom pada DataFrame Pandas |
+| Data Transformation | Menghapus tag kategori seperti `[SALAH]` dan `[MISINFORMASI]`, serta mengubah teks pada kolom `Title` menjadi huruf kecil | Mengurangi informasi penanda kategori yang berpotensi menyebabkan data leakage dan menyeragamkan format teks | Menggunakan Regex, `str.replace()`, dan `str.lower()` |
+| Data Splitting | Membagi dataset menjadi data training, validation, dan testing dengan perbandingan 70:15:15 | Memisahkan data untuk proses pembelajaran, pemantauan performa, dan evaluasi akhir model | Menggunakan `train_test_split()` sebanyak dua tahap dengan `stratify` dan `random_state=42` |
+| Data Balancing | Tidak melakukan penyeimbangan jumlah sampel antar kelas | Mempertahankan distribusi asli dataset karena ketidakseimbangan kelas masih berada pada rasio sekitar 2:1 | Menggunakan distribusi kelas asli tanpa menerapkan teknik oversampling maupun undersampling |
 
 ### Kesimpulan Data Preparation
 
-Berdasarkan tahapan data preparation, jumlah dataset berkurang dari 31.353 menjadi 31.321 data setelah proses penanganan missing values dan penghapusan duplikat.
+Berdasarkan tahapan data preparation yang telah dilakukan, jumlah dataset berkurang dari 31.353 menjadi 31.328 data setelah proses penanganan missing values dan penghapusan duplikasi awal. Selanjutnya, dilakukan pemeriksaan duplikasi tambahan yang menghasilkan penghapusan 46 baris data sehingga jumlah dataset akhir menjadi 31.282 data.
 
-Selanjutnya, fitur teks dibentuk dari gabungan judul dan isi berita, kemudian dibersihkan dan ditransformasikan menggunakan dua pendekatan sesuai kebutuhan algoritma yang digunakan.
+Fitur yang digunakan dalam penelitian ini adalah `Title` sebagai masukan model dan `hoax` sebagai target klasifikasi. Transformasi teks dilakukan melalui penghapusan tag kategori yang terdapat pada judul berita dan proses lowercasing untuk menyeragamkan penulisan teks.
 
-Data dibagi menjadi 70% training, 15% validation, dan 15% test. Selain itu, dilakukan perhitungan bobot kelas untuk mengatasi ketidakseimbangan jumlah berita valid dan hoaks.
+Dataset kemudian direncanakan untuk dibagi menjadi tiga bagian dengan perbandingan 70% training, 15% validation, dan 15% testing. Pembagian dilakukan menggunakan metode stratified splitting untuk mempertahankan proporsi kelas pada masing-masing bagian data.
 
-Dengan demikian, dataset telah melalui tahapan persiapan hingga siap digunakan pada tahap pemodelan menggunakan Multinomial Naive Bayes, Support Vector Machine (SVM), dan Long Short-Term Memory (LSTM).
-
-Namun, kualitas label dan keterkaitan antara sumber berita dengan label masih menjadi keterbatasan dataset yang perlu diperhatikan dalam interpretasi hasil pemodelan.
+Selain itu, penelitian ini tidak menerapkan data balancing karena distribusi kelas masih memungkinkan untuk digunakan dalam proses klasifikasi tanpa mengubah komposisi data. Dengan demikian, dataset dipersiapkan untuk digunakan dalam proses pemodelan menggunakan Multinomial Naive Bayes, Support Vector Machine (SVM), dan Long Short-Term Memory (LSTM).
 
 ---
 
