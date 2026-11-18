@@ -502,13 +502,173 @@ Berikut merupakan ringkasan tahapan data preparation yang dilakukan:
 
 ### Kesimpulan Data Preparation
 
-Berdasarkan tahapan data preparation yang telah dilakukan, jumlah dataset berkurang dari 31.353 menjadi 31.328 data setelah proses penanganan missing values dan penghapusan duplikasi awal. Selanjutnya, dilakukan pemeriksaan duplikasi tambahan yang menghasilkan penghapusan 46 baris data sehingga jumlah dataset akhir menjadi 31.282 data.
+Data Preparation dilakukan untuk mempersiapkan dataset agar memiliki kualitas dan format yang sesuai sebelum digunakan dalam proses pemodelan klasifikasi berita hoaks.
 
-Fitur yang digunakan dalam penelitian ini adalah `Title` sebagai masukan model dan `hoax` sebagai target klasifikasi. Transformasi teks dilakukan melalui penghapusan tag kategori yang terdapat pada judul berita dan proses lowercasing untuk menyeragamkan penulisan teks.
+Setiap tahapan memiliki tujuan dan metode implementasi yang berbeda. Berikut ringkasan proses Data Preparation yang telah dilakukan.
 
-Dataset kemudian direncanakan untuk dibagi menjadi tiga bagian dengan perbandingan 70% training, 15% validation, dan 15% testing. Pembagian dilakukan menggunakan metode stratified splitting untuk mempertahankan proporsi kelas pada masing-masing bagian data.
+### 1. Data Cleaning
 
-Selain itu, penelitian ini tidak menerapkan data balancing karena distribusi kelas masih memungkinkan untuk digunakan dalam proses klasifikasi tanpa mengubah komposisi data. Dengan demikian, dataset dipersiapkan untuk digunakan dalam proses pemodelan menggunakan Multinomial Naive Bayes, Support Vector Machine (SVM), dan Long Short-Term Memory (LSTM).
+**Apa yang dilakukan?**
+
+Melakukan pembersihan data dengan menangani missing values, menghapus data duplikat, memeriksa outlier, dan menyesuaikan tipe data pada kolom utama.
+
+Hasil proses cleaning:
+- Data awal sebanyak 31.353 baris.
+- Sebanyak 27 baris dihapus karena memiliki nilai kosong pada kolom wajib, yaitu `Title` atau `FullText`.
+- Sebanyak 5 data duplikat dihapus berdasarkan kesamaan judul dan isi berita.
+- Sebanyak 1.756 data terindikasi sebagai outlier berdasarkan panjang teks, tetapi tetap dipertahankan.
+- Jumlah data akhir setelah cleaning sebanyak **31.321 baris**.
+
+**Mengapa dilakukan?**
+
+Data cleaning diperlukan untuk memastikan data yang digunakan memiliki informasi yang memadai, mengurangi data berulang, dan memperbaiki kesesuaian tipe data. Pemeriksaan outlier juga dilakukan untuk mengetahui adanya artikel dengan panjang teks yang tidak biasa.
+
+Data outlier tidak langsung dihapus karena artikel yang terlalu panjang atau pendek belum tentu merupakan data yang salah.
+
+**Bagaimana implementasinya?**
+
+Implementasi dilakukan menggunakan library Pandas dengan beberapa fungsi berikut:
+
+- `dropna()` untuk menghapus baris yang memiliki nilai kosong pada kolom wajib.
+- `drop_duplicates()` untuk menghapus data duplikat berdasarkan kombinasi judul dan isi berita yang sudah dinormalisasi.
+- Metode Interquartile Range (IQR) untuk mendeteksi outlier berdasarkan jumlah kata.
+- `astype()` dan `pd.to_numeric()` untuk menyesuaikan tipe data kolom teks dan label.
+
+### 2. Feature Engineering
+
+**Apa yang dilakukan?**
+
+Membentuk fitur baru dari data yang sudah dibersihkan dengan tahapan:
+- Menghapus penanda kategori pada awal judul, seperti `[SALAH]`, `[BENAR]`, dan `[HOAX]`.
+- Menggabungkan kolom `Title` dan `FullText` menjadi fitur baru bernama `text_raw`.
+- Membuat fitur tambahan `jumlah_karakter` dan `jumlah_kata`.
+- Memisahkan variabel input (`X`) dan target (`y`).
+
+**Mengapa dilakukan?**
+
+Feature engineering dilakukan untuk menghasilkan fitur teks yang lebih informatif bagi proses klasifikasi. Penggabungan judul dan isi berita memungkinkan model memperoleh informasi yang lebih lengkap.
+
+Penghapusan penanda kategori pada judul dilakukan karena penanda tersebut berpotensi memberikan petunjuk langsung mengenai label kepada model.
+
+**Bagaimana implementasinya?**
+
+Implementasi menggunakan Pandas dan Regular Expression (Regex).
+
+- `str.replace()` dengan Regex untuk menghapus penanda di awal judul.
+- Penggabungan kolom `Title` dan `FullText` untuk membentuk `text_raw`.
+- `str.len()` untuk menghitung jumlah karakter.
+- `str.split().str.len()` untuk menghitung jumlah kata.
+- Variabel `X` digunakan untuk menyimpan teks berita, sedangkan `y` menyimpan label `hoax`.
+
+### 3. Data Transformation
+
+**Apa yang dilakukan?**
+
+Melakukan transformasi teks agar dapat diproses oleh algoritma Machine Learning dan Deep Learning.
+
+Tahapan transformasi yang dilakukan meliputi:
+
+1. Text Cleaning: mengubah huruf menjadi kecil, menghapus URL, tag HTML, tanda baca, simbol, serta merapikan spasi.
+2. TF-IDF: mengubah teks menjadi bobot numerik untuk Multinomial Naive Bayes dan SVM.
+3. Tokenization: mengubah kata menjadi urutan angka untuk LSTM.
+4. Padding: menyamakan panjang urutan angka menjadi 300.
+
+**Mengapa dilakukan?**
+
+Algoritma Machine Learning dan Deep Learning tidak dapat langsung memproses teks dalam bentuk kalimat. Oleh karena itu, teks perlu dibersihkan dan diubah menjadi representasi numerik.
+
+TF-IDF digunakan untuk menghasilkan bobot kata, sedangkan tokenisasi dan padding digunakan untuk membentuk urutan angka dengan panjang yang seragam agar dapat diproses oleh LSTM.
+
+**Bagaimana implementasinya?**
+
+Implementasi dilakukan menggunakan Regex, Scikit-learn, dan TensorFlow Keras.
+
+- Fungsi `clean_text()` digunakan untuk membersihkan teks.
+- `TfidfVectorizer()` digunakan dengan `max_features=20000` dan `ngram_range=(1, 2)`.
+- `Tokenizer()` digunakan dengan batas kosakata 20.000 kata dan penanda `<OOV>` untuk kata yang tidak dikenal.
+- `pad_sequences()` digunakan untuk menyamakan panjang urutan menjadi 300 angka dengan padding di bagian akhir.
+
+TF-IDF dan Tokenizer dipelajari hanya dari data training. Data validation dan test menggunakan hasil transformasi dari proses training.
+
+### 4. Data Splitting
+
+**Apa yang dilakukan?**
+
+Membagi dataset menjadi tiga bagian, yaitu training, validation, dan test dengan perbandingan 70:15:15.
+
+Hasil pembagian data:
+
+| Jenis data | Persentase | Jumlah sampel |
+|---|---:|---:|
+| Training | 70% | 21.924 |
+| Validation | 15% | 4.698 |
+| Test | 15% | 4.699 |
+| **Total** | **100%** | **31.321** |
+
+**Mengapa dilakukan?**
+
+Data splitting diperlukan untuk memisahkan data yang digunakan dalam proses pembelajaran, validasi, dan evaluasi akhir.
+
+Pembagian menggunakan stratified split agar proporsi kelas valid dan hoaks tetap terjaga pada setiap bagian data. Penggunaan random state juga memastikan hasil pembagian dapat direproduksi.
+
+**Bagaimana implementasinya?**
+
+Implementasi menggunakan fungsi `train_test_split()` dari Scikit-learn.
+
+Parameter yang digunakan:
+- `test_size=0.30` untuk memisahkan 30% data sementara.
+- `test_size=0.50` untuk membagi data sementara menjadi validation dan test.
+- `stratify=y` untuk mempertahankan proporsi kelas.
+- `random_state=42` untuk menjaga konsistensi pembagian data.
+
+Data training digunakan untuk mempelajari model, validation disiapkan untuk pemilihan dan penyetelan model, sedangkan test disiapkan untuk evaluasi akhir.
+
+### 5. Data Balancing
+
+**Apa yang dilakukan?**
+
+Menghitung bobot untuk masing-masing kelas menggunakan teknik Class Weight.
+
+Berdasarkan data training, distribusi kelas adalah:
+
+| Kelas | Jumlah data |
+|---|---:|
+| Valid (0) | 14.661 |
+| Hoaks (1) | 7.263 |
+| **Total** | **21.924** |
+
+Hasil perhitungan bobot kelas:
+
+| Kelas | Bobot |
+|---|---:|
+| Valid (0) | 0,7477 |
+| Hoaks (1) | 1,5093 |
+
+**Mengapa dilakukan?**
+
+Class Weight digunakan untuk membantu mengatasi ketidakseimbangan kelas dengan memberikan bobot lebih besar kepada kelas yang memiliki jumlah data lebih sedikit.
+
+Dalam dataset ini, berita hoaks merupakan kelas minoritas. Oleh karena itu, kelas hoaks memperoleh bobot yang lebih besar dibandingkan kelas valid.
+
+**Bagaimana implementasinya?**
+
+Implementasi menggunakan fungsi `compute_class_weight()` dari Scikit-learn dengan parameter `class_weight='balanced'`.
+
+Perhitungan dilakukan hanya menggunakan label pada data training (`y_train`). Hasilnya kemudian disimpan dalam variabel `class_weight_dict` agar dapat digunakan pada tahap pelatihan model berikutnya.
+
+Class Weight tidak menambah atau mengurangi jumlah sampel, tetapi menyiapkan bobot yang digunakan ketika model dilatih.
+
+### Kesimpulan Data Preparation
+
+Berdasarkan seluruh tahapan yang telah dilakukan, dataset berhasil dipersiapkan dari 31.353 data awal menjadi 31.321 data setelah proses cleaning dan penghapusan duplikat.
+
+Fitur teks dibentuk dari gabungan judul dan isi berita, kemudian dibersihkan dan ditransformasikan menggunakan TF-IDF untuk Multinomial Naive Bayes dan SVM, serta tokenisasi dan padding untuk LSTM.
+
+Dataset selanjutnya dibagi menjadi training, validation, dan test dengan perbandingan 70:15:15. Perhitungan Class Weight juga dilakukan menggunakan data training untuk membantu menangani ketidakseimbangan kelas.
+
+Dengan demikian, tahapan Data Preparation telah diselesaikan hingga dataset siap digunakan pada tahap pemodelan.
+
+**Catatan:** Pada notebook ini, Class Weight baru dihitung dan disiapkan untuk pelatihan model. Penerapannya pada proses training akan dilakukan pada tahap pemodelan berikutnya.
 
 ---
 
