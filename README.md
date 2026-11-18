@@ -476,10 +476,10 @@ Strategi yang digunakan adalah pembagian data dengan perbandingan 70:15:15.
 
 | Jenis data | Persentase | Jumlah sampel |
 | ---------- | ---------- | ------------- |
-| Training   | 70%        | 21.897        |
-| Validation | 15%        | 4.692         |
-| Test       | 15%        | 4.693         |
-| **Total**  | **100%**   | **31.282**    |
+| Training   | 70%        | 21.930        |
+| Validation | 15%        | 4.699         |
+| Test       | 15%        | 4.700         |
+| **Total**  | **100%**   | **31.329**    |
 
 Pembagian data dilakukan menggunakan fungsi train_test_split() dari library Scikit-learn melalui dua tahap pembagian. Tahap pertama memisahkan 70% data training dan 30% data sementara. Selanjutnya, data sementara dibagi kembali menjadi data validation dan testing dengan perbandingan yang sama.
 
