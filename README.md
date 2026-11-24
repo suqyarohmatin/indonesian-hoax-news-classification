@@ -808,53 +808,183 @@ Dataset selanjutnya dibagi menjadi training, validation, dan testing menggunakan
 
 Dengan demikian, tahapan Data Preparation telah diselesaikan dan dataset telah siap digunakan dalam proses pemodelan sesuai kebutuhan masing-masing algoritma.
 
-## 6. MODELING  **[M + O]**
+## 6. MODELING [M + O]
 
-> Setiap model (6.1, 6.2, 6.3) dijelaskan dalam dua fase: **Model Design [M]** (sub-bagian .1–.3) dan **Optimization [O]** (sub-bagian .4–.6).
+Tahap modeling dilakukan untuk membangun model klasifikasi berita hoaks berbahasa Indonesia menggunakan pendekatan Machine Learning dan Deep Learning. Pada tahap ini, model pertama yang digunakan adalah **Multinomial Naive Bayes** sebagai baseline model. Model ini digunakan sebagai pembanding awal untuk mengetahui kemampuan klasifikasi berdasarkan fitur teks yang telah direpresentasikan menggunakan TF-IDF.
 
 ### 6.1 Model 1 — Baseline Model
 
-#### 6.1.1 Deskripsi Model  **[M]**
+#### 6.1.1 Deskripsi Model [M]
 
-**Nama Model:** [Nama model, misal: Logistic Regression]  
-**Teori Singkat:**  
-[Jelaskan secara singkat bagaimana model ini bekerja]  
-**Alasan Pemilihan:**  
-[Mengapa memilih model ini sebagai baseline?]
+**Nama Model:** Multinomial Naive Bayes (MNB)
 
-#### 6.1.2 Hypothesis Space & Inductive Bias  **[M]**
+**Teori Singkat:**
 
-- **Model family / arsitektur:** [misal: model linear]
-- **Hypothesis space:** [himpunan fungsi yang dapat direpresentasikan, misal: batas keputusan linear]
-- **Inductive bias / asumsi:** [misal: hubungan fitur-target linear, fitur independen]
-- **Implikasi terhadap dataset Anda:** [apakah asumsi cocok dengan data?]
+Multinomial Naive Bayes merupakan algoritma klasifikasi probabilistik yang menggunakan Teorema Bayes untuk menentukan kelas suatu data berdasarkan probabilitas kemunculan fitur terhadap masing-masing kelas.
 
-#### 6.1.3 Implementasi (Ringkas)  **[M]**
+Model ini bekerja dengan menghitung probabilitas suatu dokumen termasuk ke dalam kategori tertentu berdasarkan fitur kata yang terdapat di dalam dokumen tersebut. Pada proyek ini, fitur teks berita direpresentasikan menggunakan metode TF-IDF dengan 20.000 fitur dan kombinasi unigram serta bigram.
+
+Multinomial Naive Bayes menggunakan asumsi bahwa setiap fitur bersifat independen terhadap fitur lainnya dengan mempertimbangkan kelas yang diprediksi. Untuk menghindari probabilitas bernilai nol ketika terdapat fitur yang belum pernah muncul pada suatu kelas, digunakan teknik smoothing melalui parameter alpha.
+
+**Alasan Pemilihan:**
+
+Multinomial Naive Bayes dipilih sebagai baseline karena memiliki proses training yang relatif cepat, sederhana, dan sesuai untuk permasalahan klasifikasi teks. Model ini dapat digunakan sebagai pembanding awal sebelum menerapkan algoritma yang lebih kompleks, seperti Support Vector Machine dan Long Short-Term Memory.
+
+Selain itu, model ini mendukung penggunaan fitur TF-IDF sehingga dapat dimanfaatkan untuk mengklasifikasikan judul berita ke dalam dua kategori, yaitu berita valid dan berita hoaks.
+
+#### 6.1.2 Hypothesis Space & Inductive Bias [M]
+
+- **Model Family / Arsitektur:**
+
+  Probabilistic Generative Model dengan pendekatan Naive Bayes untuk klasifikasi teks multivariat berbasis distribusi multinomial.
+
+- **Hypothesis Space:**
+
+  Himpunan distribusi probabilitas yang digunakan untuk memprediksi kelas berita berdasarkan probabilitas prior kelas dan probabilitas fitur terhadap kelas tersebut. Model memilih kelas dengan probabilitas posterior paling tinggi.
+
+  Secara matematis, prediksi dilakukan dengan:
+
+  \[
+  \hat{y} = \arg\max_c P(c)\prod_j P(x_j|c)^{x_j}
+  \]
+
+  Keterangan:
+  - \(P(c)\): probabilitas suatu kelas.
+  - \(P(x_j|c)\): probabilitas fitur ke-j terhadap kelas tertentu.
+  - \(x_j\): bobot fitur dari representasi TF-IDF.
+
+- **Inductive Bias / Asumsi:**
+
+  1. Setiap fitur kata dianggap independen secara kondisional terhadap fitur lainnya apabila kelas telah diketahui.
+  2. Dokumen direpresentasikan sebagai kumpulan fitur kata tanpa mempertimbangkan urutan kata secara langsung.
+  3. Probabilitas fitur terhadap kelas dapat digunakan untuk menentukan kategori berita.
+  4. Penggunaan Laplace smoothing membantu menghindari probabilitas nol pada fitur tertentu.
+
+- **Implikasi terhadap Dataset:**
+
+  Asumsi Multinomial Naive Bayes sesuai untuk eksperimen awal pada dataset berita berbahasa Indonesia karena data telah diubah menjadi representasi numerik menggunakan TF-IDF.
+
+  Meskipun hubungan antar kata dalam sebuah kalimat sebenarnya dapat saling bergantung, pendekatan Naive Bayes tetap dapat digunakan sebagai baseline yang sederhana dan efisien. Penggunaan unigram dan bigram pada TF-IDF juga membantu merepresentasikan kata tunggal maupun kombinasi dua kata.
+
+#### 6.1.3 Implementasi (Ringkas) [M]
+
+Implementasi Multinomial Naive Bayes dilakukan menggunakan library Scikit-learn. Dataset yang digunakan merupakan hasil preprocessing dari notebook sebelumnya, sehingga proses pembagian data dan transformasi TF-IDF tetap menggunakan konfigurasi yang sama dengan eksperimen SVM.
+
+**Konfigurasi TF-IDF:**
+- `max_features = 20000`
+- `ngram_range = (1, 2)`
+- `sublinear_tf = True`
+
+**Implementasi model:**
+
 ```python
-# Contoh kode (opsional, bisa dipindah ke GitHub)
-from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
 
-model_baseline = LogisticRegression(C=1.0, max_iter=100)
-model_baseline.fit(X_train, y_train)
-y_pred_baseline = model_baseline.predict(X_test)
+# Membuat model baseline
+nb_model = MultinomialNB(
+    alpha=1.0,
+    fit_prior=True
+)
+
+# Training model
+nb_model.fit(
+    x_train_tfidf,
+    y_train
+)
+
+# Prediksi data validation
+y_val_pred_nb = nb_model.predict(
+    x_val_tfidf
+)
 ```
 
-#### 6.1.4 Optimization: Objective, Hyperparameter & Regularisasi  **[O]**
+Pembagian dataset yang digunakan:
 
-**Objective/loss yang dioptimalkan:** [misal: log-loss + L2]  
-**Parameter yang digunakan:**
+| Jenis Data | Jumlah Data |
+|---|---:|
+| Training | 21.897 |
+| Validation | 4.692 |
+| Testing | 4.693 |
+| **Total** | **31.282** |
+
+Matriks fitur TF-IDF memiliki 20.000 fitur dengan rincian:
+- Training: 21.897 × 20.000
+- Validation: 4.692 × 20.000
+- Testing: 4.693 × 20.000
+
+#### 6.1.4 Optimization: Objective, Hyperparameter & Regularisasi [O]
+
+**Objective / Loss yang Dioptimalkan:**
+
+Multinomial Naive Bayes melakukan estimasi probabilitas kelas dan probabilitas fitur berdasarkan data training. Prediksi ditentukan berdasarkan probabilitas posterior terbesar.
+
+Dalam proses estimasi probabilitas fitur, digunakan teknik additive smoothing untuk menghindari probabilitas nol. Teknik ini dikendalikan melalui parameter alpha.
+
+Berbeda dengan model yang menggunakan gradient descent, Multinomial Naive Bayes tidak melakukan optimasi iteratif menggunakan optimizer seperti Adam atau SGD. Parameter probabilitas model dihitung berdasarkan distribusi fitur dan kelas pada data training.
+
+**Parameter yang Digunakan:**
+
+```python
+nb_model = MultinomialNB(
+    alpha=1.0,
+    fit_prior=True
+)
 ```
-[Tuliskan parameter penting, contoh:]
-- C (regularization): 1.0
-- solver: 'lbfgs'
-- max_iter: 100
-```
 
-#### 6.1.5 Hasil Awal  **[O → P]**
+| Parameter | Nilai | Keterangan |
+|---|---|---|
+| `alpha` | 1.0 | Menggunakan additive/Laplace smoothing |
+| `fit_prior` | True | Probabilitas prior kelas dihitung dari data training |
+| `class_prior` | None | Prior kelas tidak ditentukan secara manual |
 
-**[Tuliskan hasil awal pada validation set; evaluasi akhir pada test set dijelaskan di Bab 7]**
+**Proses Training:**
 
----
+Model dilatih menggunakan data training yang telah ditransformasikan ke dalam bentuk TF-IDF. Berdasarkan hasil eksekusi notebook, proses training menghasilkan:
+- Jumlah fitur: 20.000
+- Jumlah kelas: 2, yaitu 0 dan 1
+- Training time: 0,0337 detik
+
+Pada tahap ini, parameter model masih menggunakan konfigurasi baseline dengan `alpha=1.0`. Belum dilakukan pencarian hyperparameter secara sistematis sehingga konfigurasi ini digunakan sebagai hasil awal untuk perbandingan model.
+
+#### 6.1.5 Hasil Awal [O → P]
+
+Evaluasi awal Multinomial Naive Bayes dilakukan menggunakan validation set yang berjumlah 4.692 data. Evaluasi ini bertujuan mengetahui kemampuan awal model dalam membedakan berita valid dan berita hoaks sebelum dilakukan evaluasi akhir menggunakan test set.
+
+**Hasil Accuracy:**
+
+- Accuracy: 0,9397
+- Accuracy dalam persentase: **93,97%**
+- Training Time: **0,0337 detik**
+
+**Classification Report:**
+
+| Kelas | Precision | Recall | F1-Score | Support |
+|---|---:|---:|---:|---:|
+| Non-Hoaks | 0,9304 | 0,9834 | 0,9562 | 3.141 |
+| Hoaks | 0,9621 | 0,8511 | 0,9032 | 1.551 |
+| **Macro Average** | **0,9463** | **0,9173** | **0,9297** | **4.692** |
+| **Weighted Average** | **0,9409** | **0,9397** | **0,9387** | **4.692** |
+
+**Confusion Matrix:**
+
+Hasil confusion matrix pada validation set menunjukkan:
+
+| Keterangan | Prediksi Non-Hoaks | Prediksi Hoaks |
+|---|---:|---:|
+| Aktual Non-Hoaks | 3.089 | 52 |
+| Aktual Hoaks | 231 | 1.320 |
+
+Berdasarkan confusion matrix tersebut, model berhasil mengklasifikasikan 3.089 berita valid dan 1.320 berita hoaks dengan benar. Sementara itu, terdapat 52 berita valid yang salah diklasifikasikan sebagai hoaks dan 231 berita hoaks yang salah diklasifikasikan sebagai berita valid.
+
+**Analisis Hasil Awal:**
+
+Berdasarkan hasil evaluasi, Multinomial Naive Bayes memperoleh accuracy sebesar 93,97% pada validation set. Nilai precision kelas hoaks mencapai 96,21%, yang menunjukkan bahwa sebagian besar berita yang diprediksi sebagai hoaks memang termasuk kategori hoaks.
+
+Namun, recall kelas hoaks sebesar 85,11% menunjukkan bahwa masih terdapat sejumlah berita hoaks yang belum berhasil dikenali oleh model. Hal ini terlihat dari confusion matrix yang menunjukkan 231 data hoaks salah diklasifikasikan sebagai berita valid.
+
+Secara keseluruhan, Multinomial Naive Bayes mampu memberikan performa awal yang cukup baik dengan waktu training yang sangat singkat. Model ini selanjutnya digunakan sebagai baseline untuk dibandingkan dengan model Advanced Machine Learning dan Deep Learning pada tahap evaluasi berikutnya.
+
+
 
 ### 6.2 Model 2 — ML / Advanced Model
 
