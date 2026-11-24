@@ -978,11 +978,13 @@ Berdasarkan confusion matrix tersebut, model berhasil mengklasifikasikan 3.089 b
 
 **Analisis Hasil Awal:**
 
-Berdasarkan hasil evaluasi, Multinomial Naive Bayes memperoleh accuracy sebesar 93,97% pada validation set. Nilai precision kelas hoaks mencapai 96,21%, yang menunjukkan bahwa sebagian besar berita yang diprediksi sebagai hoaks memang termasuk kategori hoaks.
+Berdasarkan hasil evaluasi pada validation set, model Multinomial Naive Bayes memperoleh accuracy sebesar **93,97%**. Pada kelas hoaks, model menghasilkan precision sebesar **96,21%**, yang menunjukkan bahwa sebagian besar berita yang diprediksi sebagai hoaks memang termasuk dalam kategori hoaks. Sementara itu, nilai recall sebesar **85,11%** menunjukkan bahwa model berhasil mengidentifikasi sebagian besar berita hoaks, meskipun masih terdapat sejumlah data yang belum terdeteksi dengan benar.
 
-Namun, recall kelas hoaks sebesar 85,11% menunjukkan bahwa masih terdapat sejumlah berita hoaks yang belum berhasil dikenali oleh model. Hal ini terlihat dari confusion matrix yang menunjukkan 231 data hoaks salah diklasifikasikan sebagai berita valid.
+Berdasarkan confusion matrix, terdapat **1.320 berita hoaks** yang berhasil diklasifikasikan dengan benar, sedangkan **231 berita hoaks** salah diklasifikasikan sebagai berita valid. Selain itu, terdapat 52 berita valid yang salah diprediksi sebagai hoaks. Hasil tersebut menunjukkan bahwa model memiliki ketepatan prediksi hoaks yang tinggi, tetapi masih perlu ditingkatkan dalam mengenali seluruh berita yang sebenarnya termasuk kategori hoaks.
 
-Secara keseluruhan, Multinomial Naive Bayes mampu memberikan performa awal yang cukup baik dengan waktu training yang sangat singkat. Model ini selanjutnya digunakan sebagai baseline untuk dibandingkan dengan model Advanced Machine Learning dan Deep Learning pada tahap evaluasi berikutnya.
+Jika dibandingkan dengan model Linear Support Vector Machine (SVM), Multinomial Naive Bayes memiliki nilai precision kelas hoaks yang lebih tinggi, yaitu 96,21% dibandingkan 94,95%. Namun, Linear SVM memperoleh hasil yang lebih baik pada accuracy, recall, dan F1-Score. Linear SVM mencatat accuracy sebesar 95,76%, recall sebesar 92,07%, dan F1-Score sebesar 93,49%, sedangkan Multinomial Naive Bayes memperoleh masing-masing 93,97%, 85,11%, dan 90,32%.
+
+Dari segi waktu pelatihan, Multinomial Naive Bayes membutuhkan waktu sekitar **0,0337 detik**, sehingga menunjukkan proses training yang relatif cepat. Secara keseluruhan, Multinomial Naive Bayes mampu memberikan performa awal yang baik dan memenuhi fungsinya sebagai baseline model. Meskipun demikian, berdasarkan hasil evaluasi validation set, Linear SVM menunjukkan kemampuan klasifikasi yang lebih baik secara keseluruhan, terutama dalam mengenali berita hoaks. Hasil perbandingan ini selanjutnya dapat digunakan sebagai dasar untuk mengevaluasi model lanjutan pada tahap berikutnya.
 
 
 
