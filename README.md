@@ -1,238 +1,324 @@
+# KLASIFIKASI BERITA HOAKS BERBAHASA INDONESIA MENGGUNAKAN MACHINE LEARNING DAN DEEP LEARNING
+
 ## INFORMASI PROYEK
 
 **Judul Proyek:**  
-[Klasifikasi Berita Hoaks Berbahasa Indonesia Menggunakan Machine Learning dan Deep Learning]
+Klasifikasi Berita Hoaks Berbahasa Indonesia Menggunakan Machine Learning dan Deep Learning
 
-**Anggota Kelompok:** 
-[1. Rayyan Afif / 244311025
-2. Suqya Rohmatin / 244311028]  
+**Anggota Kelompok:**
+1. Rayyan Afif / 244311025
+2. Suqya Rohmatin / 244311028
 
-**Program Studi:** [Teknologi Rekayasa Perangkat Lunak]  
-**Mata Kuliah:** [Data Science]  
-**Dosen Pengampu:** [Gus Nanang Syaifuddiin, S.Kom., M.Kom.]  
-**Tahun Akademik:** [2026/2027]  
-**Link GitHub Repository:** [https://github.com/suqyarohmatin/indonesian-hoax-news-classification]  
-**Link Video Pembahasan:** [URL Video (YouTube/Drive)]  
-**SDG yang Dipilih:** [SDG 16: Perdamaian, Keadilan, dan Kelembagaan yang Tangguh]  
-**Target SDG yang Relevan:** [Target: 16.10, yaitu menjamin akses publik terhadap informasi serta melindungi kebebasan fundamental.]
+**Program Studi:** Teknologi Rekayasa Perangkat Lunak  
+**Mata Kuliah:** Data Science  
+**Dosen Pengampu:** Gus Nanang Syaifuddiin, S.Kom., M.Kom.  
+**Tahun Akademik:** 2026/2027  
+**Link GitHub Repository:** https://github.com/suqyarohmatin/indonesian-hoax-news-classification  
+**Link Video Pembahasan:** Belum tersedia.  
+**SDG yang Dipilih:** SDG 16: Perdamaian, Keadilan, dan Kelembagaan yang Tangguh.  
+**Target SDG yang Relevan:** Target 16.10, yaitu menjamin akses publik terhadap informasi serta melindungi kebebasan fundamental.
 
 ---
 
-## 0. KERANGKA ML LIFECYCLE (L-M-O-P)
+# 0. KERANGKA ML LIFECYCLE (L-M-O-P)
 
-Laporan ini disusun mengikuti **ML Lifecycle** yang terdiri dari empat tahap berulang (iteratif):
+Proyek ini disusun mengikuti kerangka **Machine Learning Lifecycle** yang terdiri dari empat tahapan utama yang saling berkaitan dan dapat dilakukan secara berulang (iteratif).
 
 | Tahap | Singkatan | Inti Pertanyaan | Bagian Laporan |
-|-------|-----------|-----------------|----------------|
-| **Learning Problem** | **L** | Apa target, objective, dan datanya? | Bab 2, 3, 4, 5 |
-| **Model Design** | **M** | Model family/arsitektur apa, hypothesis space, dan inductive bias/asumsi apa? | Bab 6 (6.x.1 – 6.x.3) |
-| **Optimization** | **O** | Bagaimana model dilatih: loss, optimizer, tuning, regularisasi, konvergensi? | Bab 6 (6.x.4 – 6.x.6) |
-| **Predict & Evaluate** | **P** | Seberapa baik prediksi model berdasarkan metrik evaluasi? | Bab 7 |
+|---|---|---|---|
+| **Learning Problem** | **L** | Apa target, objective, dan data yang digunakan? | Bab 2, 3, 4, 5 |
+| **Model Design** | **M** | Model atau arsitektur apa yang digunakan? Bagaimana hypothesis space dan inductive bias-nya? | Bab 6 |
+| **Optimization** | **O** | Bagaimana model dilatih dan dioptimasi melalui loss function, optimizer, hyperparameter tuning, dan regularisasi? | Bab 6 |
+| **Predict & Evaluate** | **P** | Seberapa baik hasil prediksi model berdasarkan metrik evaluasi? | Bab 7 |
 
-```
-   L (Learning Problem) ──► M (Model Design) ──► O (Optimization) ──► P (Predict & Evaluate)
-          ▲                                                                   │
-          └─────────────── iterasi / perbaikan berdasarkan hasil evaluasi ────┘
+### Alur Machine Learning Lifecycle
+
+```text
+L (Learning Problem)
+        |
+        v
+M (Model Design)
+        |
+        v
+O (Optimization)
+        |
+        v
+P (Predict & Evaluate)
+        |
+        v
+Iterasi / Perbaikan Berdasarkan Hasil Evaluasi
+        |
+        +---------------------> Kembali ke Tahap L, M, atau O
 ```
 
-**Catatan untuk mahasiswa:** Setiap bagian diberi label **[L]**, **[M]**, **[O]**, atau **[P]**. Pastikan Anda dapat menjelaskan keterkaitan antar tahap, misalnya bagaimana hasil **P** mendorong perbaikan pada **L/M/O** (Bab 7.5).
+Pada proyek ini, tahap Learning Problem telah dilakukan melalui perumusan masalah, pengumpulan dataset, pemeriksaan data, EDA, dan data preparation.
+
+Tahap Model Design dan Optimization direncanakan menggunakan tiga pendekatan, yaitu Multinomial Naive Bayes, Support Vector Machine (SVM), dan Long Short-Term Memory (LSTM). Implementasi yang sudah tersedia pada notebook saat ini adalah model SVM.
+
+Hasil evaluasi nantinya digunakan sebagai dasar untuk melakukan perbaikan terhadap dataset, pemilihan model, dan konfigurasi optimasi.
 
 ---
 
-## 1. LEARNING OUTCOMES
+# 1. LEARNING OUTCOMES
+
 Pada proyek ini, mahasiswa diharapkan dapat:
-1. **[L]** Mengidentifikasi masalah nyata dari **ide sendiri** yang selaras dengan salah satu tujuan **SDGs** ([Agenda 2030 – sdgs.un.org/2030agenda](https://sdgs.un.org/2030agenda)), lalu merumuskan problem statement (target, objective, data) secara jelas
-2. **[L]** Melakukan analisis dan eksplorasi data (EDA) secara komprehensif (**OPSIONAL**)
-3. **[L]** Melakukan data preparation yang sesuai dengan karakteristik dataset
-4. **[M]** Merancang tiga model machine learning dengan justifikasi hypothesis space dan inductive bias (**WAJIB**):
-   - Model baseline
-   - Model machine learning / advanced
-   - Model deep learning (**WAJIB**)
-5. **[O]** Mengoptimasi model secara sistematis (loss function, optimizer, hyperparameter tuning, regularisasi)
-6. **[P]** Menggunakan metrik evaluasi yang relevan dengan jenis tugas ML dan menganalisis hasilnya
-7. Melaporkan hasil eksperimen secara ilmiah dan sistematis
-8. Mengunggah seluruh kode proyek ke GitHub (**WAJIB**)
-9. Menerapkan prinsip software engineering dalam pengembangan proyek
+
+1. **[L]** Mengidentifikasi permasalahan nyata dari ide sendiri yang selaras dengan salah satu tujuan Sustainable Development Goals (SDGs), kemudian merumuskan problem statement yang terdiri dari target, objective, dan data secara jelas.
+2. **[L]** Melakukan analisis dan eksplorasi data (EDA) untuk memahami karakteristik dataset yang digunakan.
+3. **[L]** Melakukan data preparation yang sesuai dengan karakteristik dataset teks berbahasa Indonesia.
+4. **[M]** Merancang tiga pendekatan model Machine Learning dengan justifikasi hypothesis space dan inductive bias, yaitu:
+   - Model baseline: Multinomial Naive Bayes.
+   - Model advanced Machine Learning: Support Vector Machine (SVM).
+   - Model Deep Learning: Long Short-Term Memory (LSTM).
+5. **[O]** Melakukan optimasi model secara sistematis melalui pengujian hyperparameter dan pengendalian overfitting.
+6. **[P]** Menggunakan metrik evaluasi yang sesuai dengan jenis tugas klasifikasi, seperti Accuracy, Precision, Recall, F1-Score, dan Confusion Matrix.
+7. Menyusun laporan hasil eksperimen secara ilmiah dan sistematis.
+8. Mengunggah seluruh kode dan dokumentasi proyek ke GitHub.
+9. Menerapkan prinsip software engineering dalam pengembangan proyek agar kode lebih terstruktur dan dapat direproduksi.
 
 ---
 
-## 2. PROJECT OVERVIEW  **[L]**
+# 2. PROJECT OVERVIEW [L]
 
-### 2.1 Latar Belakang
-Penyebaran berita hoaks melalui media sosial telah menjadi ancaman serius bagi stabilitas sosial, politik dan kesehatan masyarakat. Tingginya volume dan kecepatan alur informasi digital menyebabkan masyarakat rentan meneruma serta menyebarkan informasi yang salah sebelum sempat memverifikasi kebenarannya. Pembuktian kebenaran berita secara manual oleh manusia membutuhkan waktu, tenaga, dan sumber daya yang banyak, sehingga sering kali terlambat dibandingkan dengan viralnya berita hoaks tersebut.
+## 2.1 Latar Belakang
 
-Pengembangan Sistem otomatis berbasis Mechine Learning dan Deep Learning untuk mendeteksi berita hoaks menjadi kunci untuk mempercepat proses verifikasi teks. dengan memanfaatkan teknik Natural Language Processing(NLP), model dapat mengenali pola kebahasaan, struktur teks, dan karakteristik semantik yang membedakan artikel berita hoaks dengan berita valid. Sistem ini dirancang untuk alat bantu navigasi informasi awal bagi masyarakat, bukan sebagai pengambil keputusan mutlak atas kebenaran suatu berita.
+Penyebaran berita hoaks melalui media sosial dan platform digital telah menjadi salah satu permasalahan serius dalam penyebaran informasi di Indonesia. Tingginya volume dan kecepatan aliran informasi digital menyebabkan masyarakat rentan menerima serta menyebarkan informasi yang salah sebelum sempat memverifikasi kebenarannya.
 
-Implementasi proyek ini mendukung Sustainabel Development Goals(SDG 16), yaitu menciptakan perdamaian,keadilan dan kelembagaan yang tangguh. dengan menyediakan mekanisme otomatisasi filter berita hoaks, masyarakat dapat memperoleh akses informasi yang lebih terpercaya.
+Pembuktian kebenaran berita secara manual membutuhkan waktu, tenaga, dan sumber daya yang cukup banyak. Proses pemeriksaan fakta yang dilakukan secara manual juga berpotensi terlambat dibandingkan dengan kecepatan penyebaran berita hoaks di media digital.
 
-**Referensi (berformat APA/IEEE):**
-> Jocelynne, C., Wijayakusuma, I. L., & Harini, L. P. I. (2025). Detection of Political Hoax News Using Fine-Tuning IndoBERT. Journal of Applied Informatics and Computing, 9(2), 354–360. https://doi.org/10.30871/jaic.v9i2.8989.
+Pengembangan sistem otomatis berbasis Machine Learning dan Deep Learning dapat menjadi salah satu pendekatan untuk membantu proses penyaringan informasi. Dengan memanfaatkan teknik Natural Language Processing (NLP), teks berita dapat diolah sehingga model mampu mempelajari pola kata dan karakteristik teks yang berkaitan dengan kategori berita.
+
+Pada proyek ini dikembangkan pendekatan klasifikasi biner untuk membedakan berita hoaks dan berita valid berbahasa Indonesia. Model menggunakan judul berita sebagai fitur utama dalam proses klasifikasi.
+
+Sistem yang dikembangkan dirancang sebagai alat bantu penyaringan awal informasi bagi masyarakat, bukan sebagai pengambil keputusan mutlak mengenai kebenaran suatu berita. Hasil prediksi tetap memerlukan verifikasi lebih lanjut dari sumber informasi yang dapat dipercaya.
+
+Implementasi proyek ini mendukung Sustainable Development Goals (SDG) 16, yaitu Perdamaian, Keadilan, dan Kelembagaan yang Tangguh. Secara khusus, proyek berkaitan dengan Target 16.10 melalui upaya membantu masyarakat memperoleh akses informasi yang lebih terpercaya.
+
+**Referensi (berformat APA):**
+
+> Jocelynne, C., Wijayakusuma, I. L., & Harini, L. P. I. (2025). Detection of Political Hoax News Using Fine-Tuning IndoBERT. Journal of Applied Informatics and Computing, 9(2), 354–360. https://doi.org/10.30871/jaic.v9i2.8989
+
 > Rachmawati, O. C. R., & Darmawan, Z. M. E. (2024). The Comparison of Deep Learning Models for Indonesian Political Hoax News Detection. CommIT Journal, 18(2), 123–135. https://doi.org/10.21512/commit.v18i2.10929
 
+## 2.2 Keterkaitan dengan SDGs (WAJIB)
 
-### 2.2 Keterkaitan dengan SDGs (WAJIB)
+| Komponen | Pertanyaan Panduan | Jawaban |
+|---|---|---|
+| **SDG yang dipilih** | Goal nomor berapa dan apa namanya? | SDG 16: Peace, Justice, and Strong Institutions (Perdamaian, Keadilan, dan Kelembagaan yang Tangguh). |
+| **Target SDG** | Target mana yang paling relevan? | Target 16.10: Menjamin akses publik terhadap informasi dan melindungi kebebasan fundamental sesuai dengan perundang-undangan nasional dan perjanjian internasional. |
+| **Masalah nyata** | Masalah konkret apa yang diangkat? Siapa yang terdampak? | Tingginya tingkat penyebaran berita hoaks di platform digital Indonesia yang dapat memicu disinformasi, konflik sosial, dan kesalahpahaman masyarakat. Pihak yang terdampak adalah masyarakat umum pengguna internet dan media sosial. |
+| **Peran ML** | Mengapa ML/DL cocok? Apa keputusan atau proses yang dibantu? | Machine Learning dan Deep Learning dapat membantu melakukan klasifikasi awal terhadap teks berita secara otomatis berdasarkan pola kata dan karakteristik teks. Sistem membantu mempercepat penyaringan informasi sebelum dilakukan verifikasi lebih mendalam. |
+| **Indikator kontribusi** | Bagaimana hasil model berkontribusi terhadap target SDG? | Kontribusi tidak langsung melalui pengembangan alat bantu klasifikasi awal yang dapat membantu meningkatkan kesadaran masyarakat terhadap informasi yang diterima. |
+| **Pertimbangan etika** | Apa risiko bias, privasi, atau dampak kesalahan prediksi? | Terdapat risiko false positive, yaitu berita valid dianggap hoaks, serta false negative, yaitu berita hoaks dianggap valid. Selain itu, dataset memiliki potensi bias berdasarkan sumber berita. Hasil prediksi harus diposisikan sebagai rekomendasi awal dan bukan keputusan final. |
 
-| Komponen | Pertanyaan Panduan | Jawaban Anda |
-|----------|--------------------|--------------|
-| **SDG yang dipilih** | Goal nomor berapa dan apa namanya? |  SDG 16: Peace, Justice, and Strong Institutions (Perdamaian, Keadilan, dan Kelembagaan yang Tangguh)  |
-| **Target SDG** | Target (misal 3.4, 13.1) mana yang paling relevan? |  Target 16.10: Menjamin akses publik terhadap informasi dan melindungi kebebasan fundamental, sesuai dengan perundang-undangan nasional dan perjanjian internasional  |
-| **Masalah nyata** | Masalah konkret apa yang diangkat? Siapa yang terdampak? |  Tingginya tingkat penyebaran hoaks di platform digital Indonesia yang dapat memicu disinformasi, konflik sosial, dan miskonsepsi publik. Pihak yang terdampak adalah masyarakat umum pengguna internet dan media sosial.  |
-| **Peran ML** | Mengapa ML/DL cocok? Apa keputusan atau proses yang dibantu? |  ML/DL sangat efisien dalam mengekstraksi fitur teks berbahasa Indonesia dalam jumlah besar secara cepat. Model membantu mempercepat klasifikasi awal berita (pre-filtering) sebelum dilakukan verifikasi mendalam.  |
-| **Indikator kontribusi** | Bagaimana hasil model berkontribusi pada target SDG (langsung/tidak langsung)? |  Kontribusi tidak langsung: Meningkatkan kualitas dan keandalan informasi yang diterima publik, serta meminimalkan penyebaran konten disinformasi yang merusak kebebasan fundamental dan perdamaian sosial.  |
-| **Pertimbangan etika** | Risiko bias, privasi, atau dampak salah prediksi? |  Risiko false positive (berita valid dianggap hoaks) yang dapat membatasi kebebasan berpendapat, serta bias dataset terhadap topik politik tertentu. Hasil prediksi wajib diposisikan sebagai rekomendasi awal, bukan keputusan final.  |
+**Sumber ide:**
 
-**Sumber ide:** [Ide ini muncul dikarenakan seringnya saya mendengar bahwa nenek saya termakan hoaks yang ia baca dihp]
+Ide proyek ini muncul karena sering mendengar pengalaman anggota keluarga, khususnya nenek, yang pernah mempercayai informasi hoaks yang dibaca melalui telepon genggam. Pengalaman tersebut menjadi salah satu alasan untuk mengembangkan sistem yang dapat membantu masyarakat melakukan penyaringan awal terhadap informasi digital.
 
-### 2.3 Ringkasan Alur Lifecycle Proyek
+## 2.3 Ringkasan Alur Lifecycle Proyek
 
-Proyek ini dijalankan melalui alur lifecycle bertahap yang mencakup tahap L (Problem Formulation & Data Preparation), M (Modeling & Baseline Comparison), O (Optimization & Evaluation), hingga P (Deployment & Monitoring). Pada tahap L, masalah dirumuskan ke dalam kerangka binary text classification dan data berita berbahasa Indonesia diproses (cleaning, lowercasing, stopword removal, lemmatization/stemming). Pada tahap M dan O, dikembangkan tiga arsitektur model (Multinomial Naive Bayes sebagai baseline, Support Vector Machine sebagai model advanced, serta Long Short-Term Memory sebagai model Deep Learning) yang dievaluasi menggunakan F1-Score, Precision, Recall, dan Confusion Matrix. Iterasi direncanakan pada tahap pemrosesan fitur (eksperimen TF-IDF vs word embedding) serta penyesuaian hyperparameter untuk mengurangi overfitting dan bias klasifikasi.
+Proyek ini dijalankan melalui tahapan Machine Learning Lifecycle yang meliputi Learning Problem (L), Model Design (M), Optimization (O), dan Predict & Evaluate (P).
 
-## 3. BUSINESS UNDERSTANDING / PROBLEM UNDERSTANDING  **[L]**
+Pada tahap Learning Problem, permasalahan dirumuskan sebagai binary text classification dengan target prediksi berupa berita valid (0) dan berita hoaks (1). Dataset diperoleh dari Kaggle yang merupakan gabungan empat sumber berita berbahasa Indonesia, yaitu CNN Indonesia, Kompas, Tempo, dan TurnBackHoax.
 
-### 3.1 Problem Statements
-1. Efisiensi Verifikasi Teks: Bagaimana membangun model klasifikasi otomatis yang dapat membedakan teks berita hoaks dan valid berbahasa Indonesia secara presisi dan cepat guna mengurangi ketergantungan pada pemeriksaan manual?
-2. Kinerja Arsitektur Model: Sejauh mana performa arsitektur Deep Learning (LSTM) dapat mengungguli metode klasik Machine Learning (Multinomial Naive Bayes dan Support Vector Machine) dalam menangkap pola kontekstual dan urutan kata pada teks berita hoaks?
-3. Penanganan Unstructured Text & Imbalance Data: Bagaimana menerapkan teknik text preprocessing dan ekstraksi fitur (TF-IDF vs Embedding) yang efektif untuk menangani noise, variasi kosakata, serta potensi ketidakseimbangan kelas (class imbalance) pada dataset berita berbahasa Indonesia?
+Pada tahap data preparation, dilakukan pemeriksaan karakteristik dataset, Exploratory Data Analysis, penanganan missing values, penghapusan data duplikat, penghapusan penanda kategori pada judul, lowercasing, pemilihan fitur, serta pembagian data menggunakan stratified split.
 
-### 3.2 Formulasi Learning Problem (WAJIB)
+Pada tahap Model Design, direncanakan tiga pendekatan model, yaitu Multinomial Naive Bayes sebagai baseline, Support Vector Machine sebagai advanced Machine Learning, dan Long Short-Term Memory sebagai Deep Learning.
 
-Rumuskan masalah dalam kerangka *Learning Problem*:
+Pada tahap Optimization, dilakukan perencanaan optimasi model melalui pengujian hyperparameter dan pengendalian overfitting. Implementasi optimasi yang telah dilakukan pada notebook adalah pengujian parameter C pada model LinearSVC.
 
-| Komponen | Pertanyaan Panduan | Jawaban Anda |
-|----------|--------------------|--------------|
-| **Target** | Apa yang diprediksi? Jenis tugas (klasifikasi biner/multikelas, regresi, forecasting, clustering, dll.)? |  Target Prediksi: Label kategori berita biner, yaitu Hoaks (1) atau Valid/Non-Hoaks (0). Jenis Tugas: Supervised Learning — Binary Text Classification.  |
-| **Objective** | Apa yang dioptimalkan/diminimalkan secara matematis (misal: cross-entropy, MSE)? Metrik keberhasilan utama? |  Fungsi Logika/Rugi: Pengurangan Binary Cross-Entropy Loss (pada model Deep Learning/LSTM) dan optimasi margin/probabilitas (pada SVM dan Naive Bayes). Metrik Utama: F1-Score (karena menyeimbangkan Precision dan Recall pada kasus deteksi hoaks). |
-| **Data** | Sumber, ukuran, jenis, dan asumsi tentang data (i.i.d.? distribusi train vs test?) |  Sumber: Dataset Kaggle (Indonesian Fact and Hoax Political News). Ukuran & Pembagian: Dibagi secara terstruktur untuk training, validation, dan testing. Jenis Data: Teks berita dan narasi berbahasa Indonesia berlabel. Asumsi: Data diasumsikan representatif setelah melalui tahap custom cleaning untuk menghilangkan artefak sumber data.  |
+Pada tahap Predict & Evaluate, model SVM telah diuji menggunakan test set sebanyak 4.693 data dan memperoleh accuracy sebesar 96,10%. Hasil evaluasi ini menjadi dasar untuk mengidentifikasi kesalahan klasifikasi dan merencanakan pengembangan model selanjutnya.
 
-### 3.3 Goals
+---
 
-Tujuan harus spesifik, terukur, dan selaras dengan problem statement.
-**Contoh tujuan:**
-1. Membangun model ML untuk memprediksi berita hoaks berdasrakan pola kalimat dengan akurasi > 85%
-2. Mengukur performa tiga pendekatan model (baseline, advanced, deep learning)
-3. Menentukan model terbaik berdasarkan evaluasi test set yang paling andal untuk diimplementasikan.
-4. Menghasilkan sistem yang dapat bekerja secara reproducible
-5. Mendukung target SDG 16.10 dengan menyediakan sistem penyaringan awal informasi hoaks untuk meningkatkan akses publik terhadap informasi yang valid
+# 3. BUSINESS UNDERSTANDING / PROBLEM UNDERSTANDING [L]
 
-### 3.4 Solution Approach  **[M]**
+## 3.1 Problem Statements
 
-Mahasiswa **WAJIB** menggunakan minimal **tiga model** dengan komposisi sebagai berikut:
-#### **Model 1 – Baseline Model**
-Model sederhana sebagai pembanding dasar.
-**Pilihan model:**
-- Multinomial Naive Bayes
+Permasalahan yang diangkat dalam proyek ini dirumuskan sebagai berikut:
 
-**[Alasan Pemilihan]**
-Pembanding yang cepat dan efisien untuk klasifikasi teks berbasis probabilitas.
+1. **Efisiensi Verifikasi Teks:** Bagaimana membangun model klasifikasi otomatis yang dapat membedakan berita hoaks dan berita valid berbahasa Indonesia berdasarkan judul berita secara cepat dan tepat sehingga dapat membantu mengurangi ketergantungan pada pemeriksaan manual?
 
-#### **Model 2 – Advanced / ML Model**
-Model machine learning yang lebih kompleks.
-**Pilihan model:**
-- Support Vector Machine (SVM)
+2. **Kinerja Arsitektur Model:** Bagaimana perbandingan performa arsitektur Deep Learning (LSTM) dengan metode Machine Learning klasik (Multinomial Naive Bayes dan Support Vector Machine) dalam mengklasifikasikan berita hoaks berbahasa Indonesia?
 
-**[Alasan Pemilihan]**
-Kemampuan yang baik dalam mencari _hyperline_ pemisah optimal pada ruang fitur teks.
+3. **Penanganan Unstructured Text dan Imbalanced Data:** Bagaimana menerapkan teknik preprocessing dan ekstraksi fitur teks yang sesuai untuk menangani variasi kosakata, penanda kategori, dan ketidakseimbangan kelas pada dataset berita berbahasa Indonesia?
 
-#### **Model 3 – Deep Learning Model (WAJIB)**
-Model deep learning yang sesuai dengan jenis data.
-**Pilihan Implementasi (pilih salah satu sesuai dataset):**
+4. **Kemampuan Generalisasi Model:** Bagaimana kemampuan model dalam melakukan klasifikasi terhadap data yang belum pernah digunakan selama proses training, dengan mempertimbangkan adanya keterkaitan antara sumber dataset dan label klasifikasi?
 
-**Text Data:**
-- Long Short-Term Memory (LSTM)
-- Embedding + Dense Layers
+## 3.2 Formulasi Learning Problem (WAJIB)
 
-**[Alasan Pemilihan]**
-Karena LSTM mampu memproses data teks secara berurutan. Arsitektur ini memiliki _memory cell_ yang dapat mengingat konteks dan hubungan antar kata dalam satu kalimat maupun antar kalimat, sehingga efektif untuk mengenali pola kalimat dan gaya bahasa khas berita hoaks
+Permasalahan dirumuskan menggunakan kerangka Learning Problem sebagai berikut:
 
+| Komponen | Pertanyaan Panduan | Jawaban |
+|---|---|---|
+| **Target** | Apa yang diprediksi? Jenis tugas apa yang digunakan? | Target prediksi berupa label kategori berita biner, yaitu Hoaks (1) atau Valid/Non-Hoaks (0). Jenis tugas: Supervised Learning - Binary Text Classification. |
+| **Objective** | Apa yang dioptimalkan? Apa metrik keberhasilan utama? | Mengoptimalkan kemampuan model dalam membedakan berita valid dan hoaks. Metrik evaluasi utama adalah F1-Score, khususnya pada kelas hoaks, dengan tetap memperhatikan Precision, Recall, dan Accuracy. |
+| **Data** | Apa sumber, ukuran, jenis, dan asumsi data? | Sumber data berasal dari Kaggle, yaitu Indonesian Fact and Hoax Political News. Jumlah data awal adalah 31.353 baris dan setelah cleaning menjadi 31.282 baris. Fitur pemodelan aktual adalah judul berita (`Title`) dengan target `hoax`. Dataset dibagi menjadi training, validation, dan testing menggunakan perbandingan 70:15:15. |
 
-**Minimum Requirements untuk Deep Learning:**
-- ✅ Model harus training minimal 10 epochs
-- ✅ Harus ada plot loss dan accuracy/metric per epoch
-- ✅ Harus ada hasil prediksi pada test set
-- ✅ Training time dicatat (untuk dokumentasi)
+## 3.3 Goals
 
-**Tidak Diperbolehkan:**
-- ❌ Copy-paste kode tanpa pemahaman
-- ❌ Model tidak di-train (hanya define arsitektur)
-- ❌ Tidak ada evaluasi pada test set
+Tujuan proyek dirumuskan sebagai berikut:
 
-## 4. DATA UNDERSTANDING  **[L]**
-### 4.1 Informasi Dataset
-**Sumber Dataset:**  
+1. Membangun model Machine Learning untuk memprediksi berita hoaks berdasarkan pola judul berita.
+2. Mengembangkan tiga pendekatan model, yaitu baseline, advanced Machine Learning, dan Deep Learning.
+3. Mencapai performa klasifikasi dengan target accuracy lebih dari 85%.
+4. Mengukur performa ketiga pendekatan model menggunakan Accuracy, Precision, Recall, dan F1-Score.
+5. Menentukan model terbaik berdasarkan hasil evaluasi pada test set.
+6. Menghasilkan sistem klasifikasi yang dapat direproduksi.
+7. Mendukung Target SDG 16.10 dengan menyediakan sistem penyaringan awal informasi hoaks untuk membantu meningkatkan kualitas informasi yang diterima masyarakat.
+
+Berdasarkan eksperimen yang telah dilakukan, model SVM memperoleh accuracy sebesar 96,10% pada test set. Dengan demikian, target accuracy awal telah tercapai pada model yang sudah diuji. Namun, pencapaian perbandingan tiga model masih memerlukan implementasi model lainnya.
+
+## 3.4 Solution Approach [M]
+
+Proyek ini dirancang menggunakan tiga model dengan karakteristik yang berbeda.
+
+### Model 1 - Baseline Model
+
+**Nama Model:** Multinomial Naive Bayes.
+
+**Teori Singkat:**
+
+Multinomial Naive Bayes merupakan algoritma klasifikasi berbasis probabilitas yang menggunakan Teorema Bayes untuk menentukan kategori data berdasarkan distribusi fitur.
+
+Dalam klasifikasi teks, algoritma ini dapat digunakan untuk mempelajari hubungan antara kemunculan kata dan kategori berita.
+
+**Alasan Pemilihan:**
+
+Multinomial Naive Bayes dipilih sebagai model baseline karena memiliki struktur yang sederhana, efisien, dan sesuai untuk klasifikasi teks.
+
+Model ini direncanakan sebagai pembanding awal untuk mengetahui kemampuan klasifikasi menggunakan pendekatan probabilistik.
+
+**Status Implementasi:** Belum diimplementasikan pada notebook yang tersedia.
+
+### Model 2 - Advanced / ML Model
+
+**Nama Model:** Support Vector Machine (SVM) menggunakan LinearSVC.
+
+**Teori Singkat:**
+
+Support Vector Machine merupakan algoritma supervised learning yang digunakan untuk menyelesaikan permasalahan klasifikasi dengan mencari hyperplane optimal yang memisahkan kelas data.
+
+Pada proyek ini, SVM menggunakan representasi fitur teks hasil TF-IDF untuk mempelajari pola kata dan kombinasi kata yang berkaitan dengan kategori berita.
+
+**Alasan Pemilihan:**
+
+SVM dipilih karena memiliki kemampuan yang baik dalam mengolah data teks dengan jumlah fitur yang tinggi dan representasi sparse seperti TF-IDF.
+
+Model LinearSVC juga sesuai untuk melakukan klasifikasi teks menggunakan batas keputusan linear.
+
+**Status Implementasi:** Sudah diimplementasikan, dilatih, dilakukan hyperparameter tuning, dan dievaluasi menggunakan test set.
+
+### Model 3 - Deep Learning Model (WAJIB)
+
+**Nama Model:** Long Short-Term Memory (LSTM).
+
+**Teori Singkat:**
+
+LSTM merupakan salah satu arsitektur Recurrent Neural Network yang dirancang untuk memproses data berurutan.
+
+Arsitektur ini memiliki mekanisme memory cell yang memungkinkan model mempertahankan informasi penting dari urutan kata.
+
+**Alasan Pemilihan:**
+
+LSTM dipilih karena sesuai untuk data teks yang memiliki karakteristik sekuensial. Model ini direncanakan untuk mempelajari hubungan antarkata dan pola urutan kata dalam judul berita.
+
+**Status Implementasi:** Belum diimplementasikan pada notebook yang tersedia.
+
+**Minimum Requirements untuk Deep Learning sesuai panduan proyek:**
+
+- Training minimal 10 epochs.
+- Memiliki plot training dan validation loss.
+- Memiliki plot accuracy atau metrik per epoch.
+- Memiliki hasil prediksi pada test set.
+- Training time dicatat untuk dokumentasi.
+
+---
+
+# 4. DATA UNDERSTANDING [L]
+
+## 4.1 Informasi Dataset
+
+**Sumber Dataset:**
+
 [Indonesian Fact and Hoax Political News - Kaggle](https://www.kaggle.com/datasets/linkgish/indonesian-fact-and-hoax-political-news)
 
-Dataset yang digunakan merupakan gabungan empat kumpulan data berita berbahasa Indonesia, yaitu CNN Indonesia, Kompas, Tempo, dan TurnBackHoax. File yang digunakan pada tahap ini berasal dari folder `Cleaned` di dalam arsip dataset.
+Dataset yang digunakan merupakan gabungan empat kumpulan data berita berbahasa Indonesia, yaitu CNN Indonesia, Kompas, Tempo, dan TurnBackHoax.
 
-Penggabungan dilakukan menggunakan bahasa Python dengan library Pandas. Setiap dataset diberikan kolom tambahan bernama `source` untuk menunjukkan asal sumber berita. Setelah itu, seluruh dataset digabungkan menjadi satu tabel.
+File dataset yang digunakan berasal dari folder `Cleaned` di dalam arsip ZIP.
 
-| Sumber dataset | Jumlah baris | Label     |
-| -------------- | ------------ | --------- |
-| CNN Indonesia  | 9.630        | Valid (0) |
-| Kompas         | 4.750        | Valid (0) |
-| Tempo          | 6.592        | Valid (0) |
-| TurnBackHoax   | 10.381       | Hoaks (1) |
-| **Total**      | **31.353**   |           |
+Penggabungan dilakukan menggunakan bahasa Python dengan library Pandas. Setiap dataset diberikan kolom tambahan bernama `source` untuk menunjukkan asal sumber berita. Setelah itu, seluruh dataset digabungkan menjadi satu DataFrame menggunakan fungsi `pd.concat()`.
 
-**Karakteristik dataset:**
+### Distribusi Dataset Awal
 
-| Komponen                                 | Keterangan                 |
-| ---------------------------------------- | -------------------------- |
-| Jumlah baris awal                        | 31.353                     |
-| Jumlah kolom pada hasil penggabungan     | 13 kolom                   |
-| Jumlah kolom file CNN, Kompas, dan Tempo | 9 kolom                    |
-| Jumlah kolom file TurnBackHoax           | 11 kolom                   |
-| Tipe data                                | Teks (text) dan metadata   |
-| Format file                              | XLSX                       |
-| Bahasa                                   | Indonesia                  |
-| Jenis pembelajaran                       | Supervised Learning        |
-| Jenis tugas                              | Binary Text Classification |
-| Target prediksi                          | `hoax`                     |
-| Label 0                                  | Berita valid/non-hoaks     |
-| Label 1                                  | Berita hoaks               |
-|Total empat file XLSX dalam folder Cleaned| 33,56 MB                   |
-|Jumlah data gabungan                      | 31.353 baris               |
-|Jumlah kolom setelah penggabungan         | 13 Kolom                   |
+| Sumber Dataset | Jumlah Baris | Label |
+|---|---:|---|
+| CNN Indonesia | 9.630 | Valid (0) |
+| Kompas | 4.750 | Valid (0) |
+| Tempo | 6.592 | Valid (0) |
+| TurnBackHoax | 10.381 | Hoaks (1) |
+| **Total** | **31.353** | |
 
-Dataset termasuk data teks tidak terstruktur (*unstructured text*) karena informasi utama yang digunakan dalam proses klasifikasi berupa judul dan isi artikel. Selain itu, dataset juga memiliki beberapa kolom metadata seperti waktu publikasi, penulis, tag, URL, dan sumber berita.
+### Karakteristik Dataset
 
-> **Catatan sumber:** Label 0 terdapat pada dataset CNN Indonesia, Kompas, dan Tempo, sedangkan label 1 terdapat pada dataset TurnBackHoax. Oleh karena itu, label dalam dataset ini berkaitan dengan sumber asal data. Kondisi ini menjadi salah satu keterbatasan dataset yang perlu diperhatikan ketika melakukan pemodelan dan menginterpretasikan hasil penelitian.
+| Komponen | Keterangan |
+|---|---|
+| Jumlah baris awal | 31.353 |
+| Jumlah kolom pada hasil penggabungan | 13 kolom |
+| Jumlah kolom file CNN, Kompas, dan Tempo | 9 kolom |
+| Jumlah kolom file TurnBackHoax | 11 kolom |
+| Tipe data | Teks dan metadata |
+| Format file | XLSX |
+| Bahasa | Indonesia |
+| Jenis pembelajaran | Supervised Learning |
+| Jenis tugas | Binary Text Classification |
+| Target prediksi | `hoax` |
+| Label 0 | Berita valid/non-hoaks |
+| Label 1 | Berita hoaks |
+| Total empat file XLSX dalam folder Cleaned | 33,56 MB |
+| Jumlah data gabungan | 31.353 baris |
+| Jumlah kolom setelah penggabungan | 13 kolom |
+
+Dataset termasuk data teks tidak terstruktur (*unstructured text*) karena informasi utamanya berupa judul dan isi artikel. Selain itu, dataset memiliki beberapa kolom metadata seperti waktu publikasi, penulis, tag, URL, dan sumber berita.
+
+> **Catatan sumber:** Label 0 terdapat pada dataset CNN Indonesia, Kompas, dan Tempo, sedangkan label 1 terdapat pada dataset TurnBackHoax. Oleh karena itu, label dalam dataset ini memiliki keterkaitan yang kuat dengan sumber asal data. Kondisi tersebut menjadi salah satu keterbatasan yang perlu diperhatikan ketika melakukan pemodelan dan menginterpretasikan hasil penelitian.
 
 ## 4.2 Deskripsi Fitur
 
-Kolom yang tersedia tidak sepenuhnya sama pada keempat file. CNN Indonesia, Kompas, dan Tempo memiliki sembilan kolom, sedangkan TurnBackHoax memiliki sebelas kolom. Setelah seluruh dataset digabungkan, terdapat 13 kolom karena beberapa kolom hanya tersedia pada sumber tertentu dan terdapat tambahan kolom `source`.
+Kolom yang tersedia tidak sepenuhnya sama pada keempat file dataset. CNN Indonesia, Kompas, dan Tempo memiliki sembilan kolom, sedangkan TurnBackHoax memiliki sebelas kolom.
+
+Setelah seluruh dataset digabungkan, terdapat 13 kolom karena beberapa kolom hanya tersedia pada sumber tertentu dan terdapat tambahan kolom `source`.
 
 Berikut deskripsi kolom berdasarkan hasil penggabungan dataset:
 
-| Nama fitur     | Tipe data awal | Deskripsi                                                               |
-| -------------- | -------------- | ----------------------------------------------------------------------- |
-| `Unnamed: 0`   | Integer        | Kolom indeks dari file asal; tidak digunakan sebagai fitur model        |
-| `Title`        | String/Object  | Judul artikel                                                           |
-| `Timestamp`    | String/Object  | Waktu publikasi artikel                                                 |
-| `FullText`     | String/Object  | Isi artikel                                                             |
-| `Tags`         | String/Object  | Tag atau kategori artikel                                               |
-| `Author`       | String/Object  | Nama penulis atau pihak yang tercantum sebagai penulis                  |
-| `Url`          | String/Object  | Alamat sumber artikel                                                   |
-| `text_new`     | String/Object  | Teks hasil pemrosesan yang tersedia pada dataset CNN, Kompas, dan Tempo |
-| `hoax`         | Integer        | Label target klasifikasi: 0 atau 1                                      |
-| `source`       | String/Object  | Sumber asal dataset yang ditambahkan saat proses penggabungan           |
-| `politik`      | Float          | Penanda kategori politik pada dataset TurnBackHoax                      |
-| `Narasi`       | String/Object  | Narasi klaim pada dataset TurnBackHoax                                  |
-| `Clean Narasi` | String/Object  | Narasi yang telah dibersihkan pada dataset TurnBackHoax                 |
+| Nama Fitur | Tipe Data Awal | Deskripsi |
+|---|---|---|
+| `Unnamed: 0` | Integer | Kolom indeks dari file asal; tidak digunakan sebagai fitur model. |
+| `Title` | String/Object | Judul artikel berita. |
+| `Timestamp` | String/Object | Waktu publikasi artikel. |
+| `FullText` | String/Object | Isi artikel berita. |
+| `Tags` | String/Object | Tag atau kategori artikel. |
+| `Author` | String/Object | Nama penulis atau pihak yang tercantum sebagai penulis. |
+| `Url` | String/Object | Alamat sumber artikel. |
+| `text_new` | String/Object | Teks hasil pemrosesan yang tersedia pada sebagian sumber. |
+| `hoax` | Integer | Label target klasifikasi, yaitu 0 atau 1. |
+| `source` | String/Object | Sumber asal dataset yang ditambahkan saat proses penggabungan. |
+| `politik` | Float | Penanda kategori politik pada dataset TurnBackHoax. |
+| `Narasi` | String/Object | Narasi klaim pada dataset TurnBackHoax. |
+| `Clean Narasi` | String/Object | Narasi yang telah dibersihkan. |
 
-**Fitur yang digunakan untuk pemodelan:**
+### Fitur yang Digunakan untuk Pemodelan
 
-Fitur utama yang direncanakan untuk proses klasifikasi adalah:
+Pada tahap penyederhanaan awal, dibuat kolom sementara `text_clean` berdasarkan ketersediaan kolom `text_new` dan `FullText`.
 
-- `Title`: judul artikel.
-- `hoax`: label target klasifikasi.
+Namun, pada proses pemodelan akhir dalam notebook, fitur yang digunakan adalah:
 
-Judul dan isi artikel digabungkan menjadi satu fitur teks baru bernama `text_raw`. Selanjutnya, teks tersebut dibersihkan dan disimpan dalam kolom `text_clean` sebagai input utama untuk proses pemodelan.
+- `Title`: Judul berita sebagai fitur input.
+- `hoax`: Label target klasifikasi.
 
-Kolom `hoax` digunakan sebagai target atau label yang akan diprediksi oleh model.
+Dengan demikian, model SVM menggunakan judul berita saja sebagai input, bukan gabungan judul dan isi artikel.
 
-Sementara itu, kolom metadata seperti URL, penulis, waktu publikasi, tag, dan sumber dataset tidak digunakan sebagai fitur utama pemodelan. Kolom `source` hanya digunakan untuk mengetahui asal dataset dan membantu pemeriksaan karakteristik data.
-
-> **Catatan:** Kolom `text_new`, `Narasi`, dan `Clean Narasi` tidak tersedia secara seragam pada seluruh sumber. Oleh karena itu, pemrosesan awal menggunakan `Title` dan `FullText` yang tersedia pada keempat dataset. Namun, isi `FullText` TurnBackHoax perlu ditinjau lebih lanjut karena dapat berupa artikel pemeriksaan fakta, bukan teks asli berita hoaks yang beredar.
+Kolom `text_clean` dibuat pada tahap awal pengolahan data, tetapi kemudian dihapus sebelum proses data splitting. Sementara itu, metadata seperti URL, penulis, waktu publikasi, tag, dan sumber dataset tidak digunakan sebagai fitur utama pemodelan.
 
 ## 4.3 Kondisi Data
 
@@ -240,57 +326,61 @@ Sementara itu, kolom metadata seperti URL, penulis, waktu publikasi, tag, dan su
 
 Berdasarkan hasil pemeriksaan awal setelah empat dataset digabungkan, ditemukan beberapa nilai kosong pada sejumlah kolom.
 
-| Nama kolom     | Jumlah missing values |
-| -------------- | --------------------- |
-| `Unnamed: 0`   | 0                     |
-| `Title`        | 21                    |
-| `Timestamp`    | 21                    |
-| `FullText`     | 27                    |
-| `Tags`         | 162                   |
-| `Author`       | 337                   |
-| `Url`          | 0                     |
-| `text_new`     | 10.408                |
-| `hoax`         | 0                     |
-| `source`       | 0                     |
-| `politik`      | 20.972                |
-| `Narasi`       | 20.972                |
-| `Clean Narasi` | 24.851                |
+| Nama Kolom | Jumlah Missing Values |
+|---|---:|
+| `Unnamed: 0` | 0 |
+| `Title` | 21 |
+| `Timestamp` | 21 |
+| `FullText` | 27 |
+| `Tags` | 162 |
+| `Author` | 337 |
+| `Url` | 0 |
+| `text_new` | 10.408 |
+| `hoax` | 0 |
+| `source` | 0 |
+| `politik` | 20.972 |
+| `Narasi` | 20.972 |
+| `Clean Narasi` | 24.851 |
 
-Nilai kosong pada kolom `Title` dan `FullText` perlu ditangani karena kedua kolom tersebut merupakan sumber teks utama yang digunakan dalam proses klasifikasi.
+Nilai kosong pada kolom `Title` perlu ditangani karena kolom tersebut merupakan fitur utama yang digunakan dalam proses klasifikasi.
 
-Sementara itu, beberapa nilai kosong pada kolom `text_new`, `politik`, `Narasi`, dan `Clean Narasi` terjadi karena kolom tersebut memang tidak tersedia pada seluruh sumber dataset.
+Pada tahap penyederhanaan dataset, kolom `text_clean` juga memiliki 27 nilai kosong. Setelah dilakukan penghapusan baris berdasarkan kolom `Title`, masih terdapat enam nilai kosong pada `text_clean`.
 
-Kolom metadata yang tidak digunakan sebagai fitur utama tidak perlu dipaksakan untuk diisi. Penanganan missing values difokuskan pada kolom yang benar-benar diperlukan untuk pemodelan, yaitu `Title`, `FullText`, dan `hoax`.
+Namun, kolom `text_clean` tidak digunakan dalam pemodelan akhir sehingga enam nilai kosong tersebut tidak memengaruhi fitur input SVM.
+
+Penanganan missing values difokuskan pada kolom yang benar-benar diperlukan untuk pemodelan, yaitu `Title` dan `hoax`.
 
 ### 4.3.2 Duplicate Data
 
-Pemeriksaan awal pada masing-masing file menunjukkan bahwa tidak ditemukan baris duplikat dan URL duplikat dalam setiap dataset.
+Pemeriksaan duplikasi dilakukan setelah proses penghapusan penanda kategori dan lowercasing pada judul berita.
 
-Namun, setelah seluruh dataset digabungkan, dilakukan pemeriksaan ulang berdasarkan kesamaan judul dan isi berita.
-
-Pemeriksaan dilakukan dengan mengubah teks menjadi huruf kecil dan merapikan spasi agar perbedaan penulisan kecil tidak dianggap sebagai data yang berbeda.
-
-Hasil pemeriksaan menemukan **5 data duplikat** berdasarkan kombinasi judul dan isi berita. Data duplikat tersebut kemudian dihapus pada tahap data cleaning.
-
-Dengan demikian, jumlah data berkurang dari 31.326 setelah penanganan missing values menjadi 31.321 setelah penghapusan duplikat.
-
-### 4.3.3 Outliers
-
-Outlier numerik tidak menjadi fokus utama karena fitur utama penelitian berupa teks.
-
-Namun, dilakukan pemeriksaan terhadap panjang isi berita berdasarkan jumlah kata dalam kolom `FullText`. Pemeriksaan menggunakan metode *Interquartile Range* (IQR).
+Pemeriksaan dilakukan berdasarkan kesamaan nilai pada kolom `Title`.
 
 Hasil pemeriksaan menunjukkan:
 
-| Keterangan                      | Hasil      |
-| ------------------------------- | ---------- |
-| Batas bawah                     | 13,5 kata  |
-| Batas atas                      | 633,5 kata |
-| Jumlah data terindikasi outlier | 1.756      |
+- Jumlah kelompok judul duplikat: 49.
+- Jumlah baris duplikat tambahan: 50.
+- Jumlah judul dengan konflik label: 0.
 
-Sebanyak 1.756 data terindikasi memiliki jumlah kata di luar batas IQR. Data tersebut tidak dihapus secara otomatis karena artikel yang terlalu pendek atau terlalu panjang belum tentu merupakan data yang salah atau tidak valid.
+Sebelum penghapusan, dilakukan pemeriksaan konflik label untuk memastikan judul yang sama tidak memiliki label berbeda.
 
-Oleh karena itu, data tetap dipertahankan agar informasi yang terkandung dalam artikel tidak hilang.
+Karena tidak ditemukan konflik label, data duplikat dihapus menggunakan fungsi `drop_duplicates()` dengan parameter `subset=['Title']` dan `keep='first'`.
+
+Hasilnya, jumlah data berkurang dari 31.332 menjadi 31.282 baris.
+
+### 4.3.3 Outliers
+
+Outlier numerik tidak menjadi fokus utama karena fitur akhir yang digunakan dalam penelitian berupa teks.
+
+Namun, dilakukan pemeriksaan terhadap panjang judul berita berdasarkan jumlah kata pada kolom `Title`.
+
+Pemeriksaan ditampilkan menggunakan visualisasi Boxplot untuk mengetahui variasi panjang judul pada masing-masing kategori berita.
+
+Hasil visualisasi menunjukkan adanya sejumlah judul yang memiliki jumlah kata berbeda cukup jauh dibandingkan sebagian besar data lainnya.
+
+Data tersebut tetap dipertahankan karena panjang judul yang berbeda tidak secara otomatis menunjukkan bahwa data tersebut salah atau tidak valid.
+
+Pada notebook yang digunakan, tidak dilakukan perhitungan IQR maupun penghapusan data berdasarkan outlier.
 
 ### 4.3.4 Imbalanced Data
 
@@ -298,90 +388,125 @@ Berdasarkan distribusi label awal, jumlah data berita valid lebih banyak dibandi
 
 Distribusi label sebelum proses cleaning adalah sebagai berikut:
 
-| Kelas     | Jumlah     | Persentase |
-| --------- | ---------- | ---------- |
-| Valid (0) | 20.972     | 66,89%     |
-| Hoaks (1) | 10.381     | 33,11%     |
-| **Total** | **31.353** | **100%**   |
+| Kelas | Jumlah | Persentase |
+|---|---:|---:|
+| Valid (0) | 20.972 | 66,89% |
+| Hoaks (1) | 10.381 | 33,11% |
+| **Total** | **31.353** | **100%** |
 
-Distribusi tersebut menunjukkan adanya ketidakseimbangan kelas. Jumlah data valid lebih banyak dibandingkan jumlah data hoaks.
+Setelah proses cleaning, distribusi label menjadi:
 
-Ketidakseimbangan kelas perlu diperhatikan karena model berpotensi lebih banyak mempelajari kelas mayoritas. Oleh karena itu, pada tahap data preparation digunakan pendekatan *Class Weight* untuk memberikan bobot lebih besar pada kelas yang memiliki jumlah data lebih sedikit.
+| Kelas | Jumlah | Persentase |
+|---|---:|---:|
+| Valid (0) | 20.940 | 66,94% |
+| Hoaks (1) | 10.342 | 33,06% |
+| **Total** | **31.282** | **100%** |
 
-Selain accuracy, metrik evaluasi seperti Precision, Recall, dan F1-Score juga perlu diperhatikan untuk melihat performa model pada masing-masing kelas.
+Distribusi tersebut menunjukkan bahwa dataset memiliki ketidakseimbangan kelas dengan perbandingan sekitar 2:1.
+
+Pada implementasi SVM yang tersedia, tidak dilakukan oversampling maupun undersampling. Distribusi kelas asli tetap dipertahankan dalam proses pelatihan.
+
+Metrik Precision, Recall, dan F1-Score digunakan untuk mengetahui kemampuan model dalam memprediksi setiap kategori, terutama kelas hoaks yang memiliki jumlah data lebih sedikit.
 
 ### 4.3.5 Noise dan Kualitas Data
 
-Teks berita yang berasal dari beberapa sumber memiliki kemungkinan perbedaan format penulisan, tanda baca, karakter khusus, URL, tag HTML, serta penggunaan spasi yang tidak konsisten.
+Teks berita yang berasal dari beberapa sumber memiliki kemungkinan perbedaan format penulisan, tanda baca, karakter khusus, dan penggunaan spasi yang tidak konsisten.
 
 Selain itu, terdapat perbedaan gaya penulisan antara artikel berita dari portal berita dan artikel pemeriksaan fakta dari TurnBackHoax.
 
-Pada pemeriksaan judul TurnBackHoax juga ditemukan beberapa penanda kategori, seperti `[SALAH]`, `[BENAR]`, `[HOAX]`, `[KLARIFIKASI]`, dan `[DISINFORMASI]`.
+Pada pemeriksaan judul TurnBackHoax ditemukan beberapa penanda kategori seperti:
 
-Hasil pemeriksaan menemukan 425 judul dengan penanda `[BENAR]`, meskipun seluruh data TurnBackHoax diberikan label 1 atau hoaks. Kondisi tersebut menunjukkan adanya kemungkinan ketidaksesuaian antara penanda kategori dengan label yang digunakan.
+- `[SALAH]`
+- `[BENAR]`
+- `[HOAX]`
+- `[KLARIFIKASI]`
+- `[DISINFORMASI]`
+- `[BERITA]`
+- `[FALSE]`
+- `[EDUKASI]`
 
-Oleh karena itu, kualitas label perlu diperiksa lebih lanjut agar model tidak mempelajari informasi yang keliru.
+Hasil pemeriksaan menunjukkan bahwa terdapat 425 judul dengan penanda `[BENAR]`, meskipun seluruh data TurnBackHoax diberikan label 1 atau hoaks.
+
+Kondisi tersebut menunjukkan adanya kemungkinan ketidaksesuaian antara penanda kategori dengan label yang digunakan.
+
+Oleh karena itu, penanda kategori di awal judul dihapus menggunakan Regular Expression (Regex) sebelum digunakan dalam proses pemodelan.
+
+Meskipun demikian, penghapusan penanda kategori belum sepenuhnya menyelesaikan permasalahan kualitas label sehingga pemeriksaan lebih lanjut tetap diperlukan.
 
 ### 4.3.6 Asumsi Data dan Potensi Data Leakage
 
-Dataset diasumsikan sebagai data berlabel untuk kebutuhan *supervised learning*. Model akan mempelajari hubungan antara teks berita sebagai input dan label `hoax` sebagai target klasifikasi.
+Dataset digunakan untuk kebutuhan *supervised learning*. Model mempelajari hubungan antara teks judul berita sebagai input dan label `hoax` sebagai target klasifikasi.
 
 Namun, terdapat beberapa risiko yang perlu diperhatikan.
 
 Pertama, seluruh data valid berasal dari CNN Indonesia, Kompas, dan Tempo, sedangkan seluruh data hoaks berasal dari TurnBackHoax. Kondisi ini menyebabkan label memiliki hubungan yang sangat kuat dengan sumber asal berita.
 
-Akibatnya, model berpotensi mempelajari karakteristik gaya penulisan atau format artikel dari masing-masing sumber, bukan benar-benar mengenali karakteristik berita hoaks dan berita valid.
+Akibatnya, model berpotensi mempelajari karakteristik gaya penulisan atau format judul dari masing-masing sumber, bukan benar-benar mengenali karakteristik berita hoaks dan berita valid.
 
-Kedua, terdapat penanda kategori pada judul TurnBackHoax, seperti `[SALAH]`, `[BENAR]`, dan `[HOAX]`. Penanda tersebut berpotensi memberikan petunjuk langsung terhadap label klasifikasi.
+Kedua, terdapat penanda kategori pada judul TurnBackHoax seperti `[SALAH]`, `[BENAR]`, dan `[HOAX]`. Penanda tersebut berpotensi memberikan petunjuk langsung mengenai label klasifikasi.
 
-Untuk mengurangi risiko kebocoran informasi dari penanda judul, pada tahap feature engineering dilakukan penghapusan penanda dalam tanda kurung siku yang terdapat di awal judul.
+Untuk mengurangi risiko tersebut, pada tahap feature engineering dilakukan penghapusan penanda kategori di awal judul menggunakan Regex.
 
-Selain itu, kolom metadata seperti URL, nama penulis, tag, waktu publikasi, dan sumber dataset tidak digunakan sebagai fitur utama model.
+Selain itu, kolom metadata seperti URL, penulis, waktu publikasi, tag, dan sumber dataset tidak digunakan sebagai fitur utama model.
 
-Pembagian data menggunakan *stratified split* untuk menjaga proporsi kelas valid dan hoaks pada data training, validation, dan test. Meskipun demikian, metode tersebut belum sepenuhnya mengatasi bias berdasarkan sumber dataset.
+Pembagian data menggunakan metode stratified split dengan `random_state=42` untuk menjaga proporsi kelas valid dan hoaks pada setiap bagian data.
 
-Evaluasi lanjutan dengan data dari sumber yang lebih beragam dan pemisahan berdasarkan sumber berita akan lebih kuat untuk mengukur kemampuan generalisasi model.
+Meskipun demikian, stratified split secara acak belum sepenuhnya mengatasi bias berdasarkan sumber dataset karena data dari sumber yang sama tetap dapat muncul pada training, validation, dan test.
+
+Evaluasi lanjutan menggunakan data dari sumber yang lebih beragam dan pemisahan berdasarkan sumber berita akan lebih kuat untuk mengukur kemampuan generalisasi model.
 
 ## 4.4 Exploratory Data Analysis (EDA) - OPSIONAL
 
-Exploratory Data Analysis (EDA) merupakan proses pemeriksaan dan pemahaman karakteristik data sebelum dilakukan pemodelan.
+Exploratory Data Analysis (EDA) merupakan proses pemeriksaan dan pemahaman karakteristik dataset sebelum dilakukan pemodelan.
 
-Pada notebook yang dijalankan, pemeriksaan awal telah dilakukan melalui informasi tipe data, jumlah missing values, distribusi label berdasarkan sumber dataset, serta pemeriksaan penanda kategori pada judul TurnBackHoax.
-
-Namun, notebook saat ini belum menghasilkan tiga visualisasi grafis. Oleh karena itu, belum terdapat gambar plot yang dapat dimasukkan sebagai hasil EDA.
-
-Beberapa visualisasi yang dapat digunakan pada penelitian ini adalah:
+Pada notebook yang dijalankan, telah dibuat tiga visualisasi utama untuk memahami distribusi label, panjang judul, serta keterkaitan sumber dataset dengan label klasifikasi.
 
 ### Visualisasi 1: Distribusi Kelas Berita Valid dan Hoaks
-<img width="871" height="622" alt="image" src="https://github.com/user-attachments/assets/6280864a-88a5-43e5-93e9-ff09c458992f" />
 
+Visualisasi pertama menggunakan grafik batang untuk memperlihatkan jumlah berita berdasarkan label.
 
-**Status:** Data distribusi sudah diperiksa melalui tabel jumlah kelas, tetapi grafik belum dibuat.
+Hasil pemeriksaan sebelum cleaning:
+
+| Kelas | Jumlah |
+|---|---:|
+| Valid (0) | 20.972 |
+| Hoaks (1) | 10.381 |
+
+**Insight berdasarkan hasil aktual:**
+
+Berdasarkan visualisasi distribusi kelas, jumlah berita valid sebanyak 20.972 data atau 66,89%, sedangkan berita hoaks sebanyak 10.381 data atau 33,11%.
+
+Hal ini menunjukkan bahwa dataset memiliki ketidakseimbangan kelas (*imbalanced data*), dengan jumlah berita valid sebagai kelas mayoritas.
+
+Kondisi tersebut perlu diperhatikan dalam proses pelatihan dan evaluasi model agar performa klasifikasi pada kelas hoaks tetap dapat diukur dengan baik.
+
+### Visualisasi 2: Distribusi Jumlah Kata dalam Judul Berita
+
+Visualisasi kedua menggunakan Boxplot untuk memperlihatkan distribusi jumlah kata pada kolom `Title` berdasarkan kategori berita valid dan hoaks.
+
+Pemeriksaan dilakukan dengan menghitung jumlah kata dari setiap judul, kemudian memisahkan data berdasarkan label 0 dan 1.
 
 **Insight berdasarkan hasil aktual:**
 
-Berdasarkan visualisasi distribusi kelas, jumlah berita valid sebanyak 20.972 data atau 66,89%, sedangkan berita hoaks sebanyak 10.381 data atau 33,11%. Hal ini menunjukkan bahwa dataset memiliki ketidakseimbangan kelas (imbalanced data), dengan jumlah berita valid sebagai kelas mayoritas. Kondisi tersebut perlu diperhatikan dalam proses pelatihan model agar model tidak terlalu dominan memprediksi kelas mayoritas.
+Berdasarkan visualisasi Boxplot, kedua kategori berita memiliki variasi panjang judul yang berbeda.
 
-### Visualisasi 2: Distribusi Jumlah Kata dalam Artikel
-<img width="990" height="620" alt="image" src="https://github.com/user-attachments/assets/444527e0-1fb6-447a-b93c-c62c77655923" />
+Terdapat sejumlah judul yang memiliki jumlah kata lebih tinggi dibandingkan sebagian besar data lainnya. Kondisi tersebut menunjukkan adanya variasi panjang teks pada masing-masing kategori.
 
-
-**Status:** Pemeriksaan panjang teks sudah dilakukan melalui metode IQR, tetapi histogram atau boxplot belum dibuat.
-
-**Insight berdasarkan hasil aktual:**
-Berdasarkan visualisasi Boxplot, kedua kategori berita memiliki variasi panjang teks yang cukup besar. Terdapat sejumlah data dengan jumlah kata jauh lebih tinggi dibandingkan sebagian besar data lainnya. Hal tersebut menunjukkan adanya data yang berpotensi menjadi outlier. Pada kategori hoaks terlihat nilai ekstrem yang lebih tinggi dibandingkan kategori valid. Meskipun demikian, panjang teks tidak dapat dijadikan indikator untuk menentukan kebenaran suatu berita.
+Meskipun demikian, panjang judul tidak dapat dijadikan indikator langsung untuk menentukan kebenaran suatu berita.
 
 ### Visualisasi 3: Distribusi Kelas Berdasarkan Sumber Dataset
-<img width="1119" height="616" alt="image" src="https://github.com/user-attachments/assets/de14ca07-0f3b-4c0a-821b-c52251b4f6bb" />
 
-
-**Status:** Pemeriksaan sudah dilakukan menggunakan tabel silang (*cross tabulation*), tetapi grafik belum dibuat.
+Visualisasi ketiga menggunakan *stacked bar chart* untuk menunjukkan distribusi kelas berita pada setiap sumber dataset.
 
 **Insight berdasarkan hasil aktual:**
 
-Berdasarkan visualisasi distribusi kelas berdasarkan sumber dataset, CNN Indonesia, Kompas, dan Tempo seluruhnya memiliki label valid, sedangkan TurnBackHoax seluruhnya memiliki label hoaks. Hal ini menunjukkan bahwa terdapat keterkaitan yang sangat kuat antara sumber dataset dan label klasifikasi. Kondisi tersebut berpotensi menimbulkan bias karena model dapat mempelajari karakteristik penulisan atau format artikel dari sumber berita, bukan benar-benar mengenali karakteristik berita hoaks dan valid.
+Berdasarkan visualisasi distribusi kelas berdasarkan sumber dataset, CNN Indonesia, Kompas, dan Tempo seluruhnya memiliki label valid, sedangkan TurnBackHoax seluruhnya memiliki label hoaks.
 
-> **Catatan:** Karena EDA bersifat opsional, hasil pemeriksaan tabel di atas dapat dijelaskan dalam laporan. Namun, apabila dosen meminta minimal tiga grafik, visualisasi tersebut harus dibuat terlebih dahulu sebelum gambar dan hasilnya dicantumkan dalam laporan.
+Hal ini menunjukkan bahwa terdapat keterkaitan yang sangat kuat antara sumber dataset dan label klasifikasi.
+
+Kondisi tersebut berpotensi menimbulkan bias karena model dapat mempelajari karakteristik penulisan atau format judul dari sumber berita, bukan benar-benar mengenali karakteristik berita hoaks dan berita valid.
+
+> **Catatan:** Ketiga visualisasi tersebut telah dibuat pada notebook Google Colab. Grafik distribusi kelas menggunakan data sebelum cleaning, sedangkan visualisasi panjang judul menggunakan kolom `Title`, bukan isi artikel `FullText`.
 
 ---
 
@@ -397,251 +522,291 @@ Tahapan yang dilakukan meliputi:
 
 ### 1. Handling Missing Values
 
-Pada pemeriksaan awal ditemukan 21 nilai kosong pada kolom `Title`, `Timestamp`, dan `FullText`.
+Pada pemeriksaan awal ditemukan 21 nilai kosong pada kolom `Title`.
 
 Strategi yang digunakan adalah menghapus baris yang memiliki nilai kosong pada kolom `Title` menggunakan fungsi `dropna()`.
 
-Penghapusan dipilih karena judul dan merupakan informasi utama yang dibutuhkan untuk proses klasifikasi. Apabila kedua kolom tersebut kosong, data tidak dapat memberikan informasi teks yang memadai.
+Implementasi:
+
+```python
+data = data.dropna(subset=['Title'])
+```
+
+Penghapusan dipilih karena judul merupakan informasi utama yang digunakan sebagai input dalam proses klasifikasi.
 
 Hasilnya, sebanyak 21 baris data dihapus sehingga jumlah data berkurang dari 31.353 menjadi 31.332 baris.
 
-Nilai kosong pada kolom yang lain yang tidak digunakan sebagai fitur utama tidak diisi karena tidak diperlukan dalam proses pemodelan.
+Nilai kosong pada kolom `text_clean` masih tersisa sebanyak enam baris setelah proses tersebut. Namun, kolom `text_clean` tidak digunakan dalam pemodelan akhir sehingga tidak dilakukan penghapusan tambahan berdasarkan kolom tersebut.
 
 ### 2. Removing Duplicates
 
-Penghapusan data duplikat dilakukan berdasarkan kombinasi judul dan isi berita.
+Penghapusan data duplikat dilakukan berdasarkan kesamaan judul berita.
 
-Sebelum dibandingkan, teks pada kolom `Title` dan `FullText` diubah menjadi huruf kecil dan spasi berulang dirapikan. Langkah ini dilakukan agar perbedaan penulisan kecil tidak menyebabkan data yang sama dianggap berbeda.
+Sebelum dibandingkan, teks pada kolom `Title` diubah menjadi huruf kecil dan penanda kategori pada awal judul dihapus.
 
-Penghapusan dilakukan menggunakan fungsi `drop_duplicates()`.
+Langkah ini dilakukan agar judul dengan perbedaan penanda kategori dan huruf kapital dapat diperiksa secara lebih konsisten.
 
-Hasilnya, ditemukan dan dihapus 4 data duplikat. Jumlah data setelah proses ini menjadi 31.328 baris.
+Pemeriksaan dilakukan dengan mengelompokkan judul dan menghitung jumlah kemunculannya.
+
+Hasilnya ditemukan 49 kelompok judul duplikat dengan jumlah 50 baris duplikat tambahan.
+
+Sebelum penghapusan, dilakukan pemeriksaan konflik label untuk memastikan judul yang sama tidak memiliki label berbeda. Hasilnya menunjukkan tidak ditemukan konflik label.
+
+Penghapusan dilakukan menggunakan fungsi:
+
+```python
+data = data.drop_duplicates(
+    subset=['Title'],
+    keep='first'
+).copy()
+```
+
+Hasilnya, jumlah data berkurang dari 31.332 menjadi 31.282 baris.
 
 ### 3. Handling Outliers
 
-Pemeriksaan outlier tidak dilakukan.
+Pemeriksaan karakteristik panjang judul dilakukan melalui visualisasi Boxplot berdasarkan jumlah kata pada kolom `Title`.
+
+Namun, tidak dilakukan penghapusan data outlier karena panjang judul yang terlalu pendek atau panjang belum tentu menunjukkan bahwa data tersebut salah atau tidak valid.
+
+Dengan demikian, seluruh data tetap dipertahankan.
 
 ### 4. Data Type Conversion
 
-Konversi tipe data dilakukan untuk memastikan kolom `Timestamp` menjadi tipe data datetime.
+Konversi tipe data dilakukan untuk memastikan kolom `Timestamp` dapat diproses menjadi format tanggal.
 
-**Hasil akhir Data Cleaning:**
+Pada proses ini, format tanggal dari sumber yang berbeda diseragamkan menggunakan bantuan pemetaan nama bulan Bahasa Indonesia ke Bahasa Inggris, kemudian dikonversi menggunakan fungsi `pd.to_datetime()`.
 
-| Keterangan                                          | Jumlah     |
-| --------------------------------------------------- | ---------- |
-| Data awal                                           | 31.353     |
-| Data dihapus karena missing value pada kolom wajib | 21         |
-| Data setelah penanganan missing value               | 31.332     |
-| Data duplikat yang dihapus                          | 3          |
-| **Data setelah cleaning**                           | **31.329** |
+Hasil konversi:
+
+| Keterangan | Jumlah |
+|---|---:|
+| Total data | 31.282 |
+| Timestamp berhasil dikonversi | 31.282 |
+| Timestamp gagal dikonversi | 0 |
+
+Kolom `Timestamp` selanjutnya dihapus karena tidak digunakan sebagai fitur utama dalam pemodelan.
+
+### Hasil Akhir Data Cleaning
+
+| Keterangan | Jumlah |
+|---|---:|
+| Data awal | 31.353 |
+| Data dihapus karena Title kosong | 21 |
+| Data setelah penanganan missing values | 31.332 |
+| Data duplikat tambahan yang dihapus | 50 |
+| **Data setelah cleaning** | **31.282** |
 
 Distribusi label setelah proses cleaning:
 
-| Kelas     | Jumlah     | Persentase |
-| --------- | ---------- | ---------- |
-| Valid (0) | 20.951     | 66,86%     |
-| Hoaks (1) | 10.378     | 33,14%     |
-| **Total** | **31.329** | **100%**   |
+| Kelas | Jumlah | Persentase |
+|---|---:|---:|
+| Valid (0) | 20.940 | 66,94% |
+| Hoaks (1) | 10.342 | 33,06% |
+| **Total** | **31.282** | **100%** |
 
 ## 5.2 Feature Engineering
 
-Feature engineering dilakukan untuk membentuk menghapus fitur yang tidak diperlukan.
+Feature engineering dilakukan untuk memilih fitur yang relevan dengan tujuan klasifikasi dan menghapus fitur yang tidak diperlukan.
 
 Tahapan yang dilakukan adalah sebagai berikut:
 
-### Menghapus fitur selain fitur `Title` dan `hoax`
-Hal ini dilakukan untuk memastikan data yang akan digunakan relevan dengan tujuan dan juga mencegah overfitting khususnya di fitur `Timestamp` dan `Source`. pada fitur `Timestamp` persebaran data tidak merata, ditakutkan akan mempengaruhi kinerja model yang dapat menentukan kebenaran suatu beruta berdasarkan bulan rilis berita tersebut. 
+### 1. Menghapus Penanda Kategori pada Judul
 
-Adapun fitur `FullText` dan `Clean_Narasi`, kedua fitur tsb adalah penjelasan dari fitur `Title` alasan dihapus karena perbedaan isi dari 2 fitur tsb. di fitur `Clean_Narasi` berisi komentar publik, opini publik di berbagai media sosial, untuk fitur `FullText` berisikan isi dari berita tersebut.
+Menghapus penanda kategori yang terdapat pada awal judul berita, seperti `[SALAH]`, `[BENAR]`, `[HOAX]`, dan penanda lainnya.
+
+Penghapusan dilakukan menggunakan Regular Expression (Regex) agar model tidak terlalu bergantung pada penanda kategori yang berpotensi memberikan petunjuk langsung terhadap label.
+
+### 2. Menghapus Fitur yang Tidak Digunakan
+
+Setelah proses pemeriksaan dan transformasi awal, fitur yang digunakan dalam pemodelan akhir adalah:
+
+- `Title` sebagai variabel input (X).
+- `hoax` sebagai variabel target (y).
+
+Kolom `Timestamp` dihapus karena distribusi data berdasarkan waktu tidak merata dan dikhawatirkan memengaruhi model dalam menentukan kategori berita berdasarkan waktu publikasi.
+
+Kolom `FullText` dan `Clean Narasi` juga tidak digunakan sebagai input akhir. Hal ini karena `FullText` berisi isi artikel, sedangkan `Clean Narasi` pada dataset TurnBackHoax berisi narasi atau komentar terkait klaim yang beredar.
+
+Pada eksperimen ini, pemodelan difokuskan pada judul berita agar fitur input yang digunakan lebih seragam.
+
+### 3. Pemisahan Fitur dan Target
+
+Setelah fitur dipilih, dilakukan pemisahan variabel input dan target menggunakan:
+
+```python
+X = data['Title']
+y = data['hoax']
+```
+
+Dengan demikian, model menggunakan judul berita untuk memprediksi label klasifikasi.
 
 ## 5.3 Data Transformation
 
-Data transformation dilakukan untuk mengubah teks berita menjadi format yang dapat diproses oleh algoritma Machine Learning dan Deep Learning.
+Data transformation dilakukan untuk mengubah teks berita menjadi format yang dapat diproses oleh algoritma Machine Learning.
 
-Karena penelitian menggunakan data teks, transformasi yang dilakukan disesuaikan dengan kebutuhan masing-masing algoritma.
+Karena penelitian menggunakan data teks, transformasi dilakukan berdasarkan kebutuhan pemodelan.
 
 ### 1. Text Cleaning
 
-Menghapus tags yang berisi kata [SALAH], [MISINFORMASI], dan tags-tags lainnya guna menjauhi kemungkinan overfitting
+Text cleaning dilakukan dengan menghapus penanda kategori yang terdapat pada awal judul menggunakan Regular Expression.
 
-### 2. Text LowerCasing
+Implementasi:
 
-Mengubah seluruh fitur `Title` menjadi huruf kecil
+```python
+import re
+
+def hapus_tags(title):
+    cleaned = re.sub(
+        r'^\s*[\[\(][^\]\)]+[\]\)]\s*',
+        '',
+        str(title)
+    )
+    return cleaned.strip()
+
+data['Title'] = data['Title'].apply(hapus_tags)
+```
+
+### 2. Text Lowercasing
+
+Seluruh teks pada kolom `Title` diubah menjadi huruf kecil menggunakan fungsi `str.lower()`.
+
+Implementasi:
+
+```python
+data['Title'] = data['Title'].str.lower()
+```
+
+Tahapan ini dilakukan untuk menyeragamkan format penulisan sehingga perbedaan huruf kapital tidak menjadi pembeda dalam pengolahan teks.
+
+### 3. TF-IDF Vectorization
+
+Pada pemodelan SVM, teks judul diubah menjadi representasi numerik menggunakan metode Term Frequency-Inverse Document Frequency (TF-IDF).
+
+Konfigurasi yang digunakan:
+
+| Parameter | Nilai |
+|---|---|
+| `max_features` | 20.000 |
+| `ngram_range` | (1, 2) |
+| `sublinear_tf` | True |
+
+Implementasi:
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(
+    max_features=20000,
+    ngram_range=(1, 2),
+    sublinear_tf=True
+)
+
+# TF-IDF dipelajari hanya dari data training
+x_train_tfidf = tfidf.fit_transform(X_train)
+
+# Validation dan testing menggunakan vectorizer yang sama
+x_val_tfidf = tfidf.transform(X_val)
+x_test_tfidf = tfidf.transform(X_test)
+```
+
+TF-IDF hanya dipelajari dari data training. Data validation dan testing menggunakan hasil transformasi dari proses training agar tidak terjadi kebocoran informasi dari data evaluasi ke proses pembentukan fitur.
 
 ## 5.4 Data Splitting
 
-Data splitting dilakukan untuk membagi dataset menjadi data training, validation, dan test.
+Data splitting dilakukan untuk membagi dataset menjadi tiga bagian, yaitu data training, validation, dan testing.
 
 Strategi yang digunakan adalah pembagian data dengan perbandingan 70:15:15.
 
-| Jenis data | Persentase | Jumlah sampel |
-| ---------- | ---------- | ------------- |
-| Training   | 70%        | 21.930        |
-| Validation | 15%        | 4.699         |
-| Test       | 15%        | 4.700         |
-| **Total**  | **100%**   | **31.329**    |
+### Hasil Pembagian Data
 
-Pembagian data dilakukan menggunakan fungsi train_test_split() dari library Scikit-learn melalui dua tahap pembagian. Tahap pertama memisahkan 70% data training dan 30% data sementara. Selanjutnya, data sementara dibagi kembali menjadi data validation dan testing dengan perbandingan yang sama.
+| Jenis Data | Persentase | Jumlah Sampel |
+|---|---:|---:|
+| Training | 70% | 21.897 |
+| Validation | 15% | 4.692 |
+| Test | 15% | 4.693 |
+| **Total** | **100%** | **31.282** |
 
-Metode stratify digunakan untuk mempertahankan proporsi kelas bukan hoaks dan hoaks pada masing-masing bagian data. Selain itu, digunakan random_state=42 agar proses pembagian data menghasilkan pembagian yang konsisten ketika kode dijalankan kembali.
+Pembagian data dilakukan menggunakan fungsi `train_test_split()` dari library Scikit-learn melalui dua tahap pembagian.
+
+Tahap pertama memisahkan 70% data training dan 30% data sementara. Selanjutnya, data sementara dibagi kembali menjadi data validation dan testing dengan perbandingan yang sama.
+
+Metode stratify digunakan untuk mempertahankan proporsi kelas valid dan hoaks pada masing-masing bagian data. Selain itu, digunakan `random_state=42` agar proses pembagian menghasilkan hasil yang konsisten ketika kode dijalankan kembali.
+
+Implementasi:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# Memisahkan fitur dan target
+X = data['Title']
+y = data['hoax']
+
+# Pembagian data training dan data sementara
+X_train, X_temp, y_train, y_temp = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+
+# Membagi data sementara menjadi validation dan testing
+X_val, X_test, y_val, y_test = train_test_split(
+    X_temp,
+    y_temp,
+    test_size=0.50,
+    random_state=42,
+    stratify=y_temp
+)
+```
+
+Distribusi kelas pada setiap bagian data:
+
+| Dataset | Valid (0) | Hoaks (1) | Total |
+|---|---:|---:|---:|
+| Training | 14.658 | 7.239 | 21.897 |
+| Validation | 3.141 | 1.551 | 4.692 |
+| Testing | 3.141 | 1.552 | 4.693 |
+| **Total** | **20.940** | **10.342** | **31.282** |
+
+Data training digunakan untuk mempelajari pola klasifikasi. Data validation digunakan untuk memantau performa dan memilih konfigurasi model, sedangkan data testing digunakan untuk evaluasi akhir model.
 
 ## 5.5 Data Balancing
 
-Data balancing tidak dilakukan karena data yang tidak terlalu menimpang.
+Pada implementasi notebook yang tersedia, data balancing tidak dilakukan menggunakan teknik oversampling maupun undersampling.
+
+Distribusi asli dataset tetap dipertahankan dengan jumlah data valid sebanyak 20.940 dan data hoaks sebanyak 10.342.
+
+Keputusan tersebut diterapkan pada eksperimen SVM yang tersedia. Evaluasi model tetap memperhatikan Precision, Recall, dan F1-Score untuk melihat kemampuan klasifikasi pada masing-masing kelas.
+
+Class Weight belum diterapkan pada proses pelatihan SVM dalam notebook.
 
 ## 5.6 Ringkasan Data Preparation
 
-## 5.6 Ringkasan Data Preparation
+Tahapan data preparation dilakukan untuk memastikan dataset memiliki kualitas, struktur, dan format yang sesuai sebelum digunakan dalam proses pemodelan.
 
-Tahapan data preparation dilakukan untuk memastikan dataset memiliki kualitas, struktur, dan format yang sesuai sebelum digunakan dalam proses pemodelan. Proses ini meliputi data cleaning, feature engineering, data transformation, data splitting, dan data balancing.
-
-Berikut merupakan ringkasan tahapan data preparation yang dilakukan:
+Berikut ringkasan tahapan data preparation yang dilakukan:
 
 | Tahapan | Apa yang dilakukan? | Mengapa dilakukan? | Bagaimana implementasinya? |
 |---|---|---|---|
-| Data Cleaning | Menangani missing values, menghapus data duplikat, dan melakukan konversi tipe data Timestamp menjadi datetime | Memastikan data memiliki informasi yang memadai, mengurangi redundansi, dan menjaga kesesuaian tipe data | Menggunakan `dropna()`, `drop_duplicates()`, dan `pd.to_datetime()` |
-| Feature Engineering | Memilih fitur `Title` sebagai fitur utama dan `hoax` sebagai target klasifikasi serta menghapus fitur yang tidak digunakan | Memusatkan proses klasifikasi pada judul berita dan menghindari penggunaan fitur yang berpotensi menimbulkan bias | Menggunakan pemilihan kolom pada DataFrame Pandas |
-| Data Transformation | Menghapus tag kategori seperti `[SALAH]` dan `[MISINFORMASI]`, serta mengubah teks pada kolom `Title` menjadi huruf kecil | Mengurangi informasi penanda kategori yang berpotensi menyebabkan data leakage dan menyeragamkan format teks | Menggunakan Regex, `str.replace()`, dan `str.lower()` |
-| Data Splitting | Membagi dataset menjadi data training, validation, dan testing dengan perbandingan 70:15:15 | Memisahkan data untuk proses pembelajaran, pemantauan performa, dan evaluasi akhir model | Menggunakan `train_test_split()` sebanyak dua tahap dengan `stratify` dan `random_state=42` |
-| Data Balancing | Tidak melakukan penyeimbangan jumlah sampel antar kelas | Mempertahankan distribusi asli dataset karena ketidakseimbangan kelas masih berada pada rasio sekitar 2:1 | Menggunakan distribusi kelas asli tanpa menerapkan teknik oversampling maupun undersampling |
+| **Data Cleaning** | Menangani missing values pada `Title`, menghapus judul duplikat, dan mengonversi `Timestamp` menjadi format tanggal. | Memastikan data memiliki informasi utama yang dibutuhkan dan mengurangi redundansi data. | Menggunakan `dropna()`, `drop_duplicates()`, dan `pd.to_datetime()`. |
+| **Feature Engineering** | Memilih `Title` sebagai fitur input dan `hoax` sebagai target klasifikasi serta menghapus fitur yang tidak digunakan. | Memusatkan proses klasifikasi pada judul berita dan menghindari penggunaan metadata yang tidak diperlukan. | Menggunakan pemilihan kolom pada DataFrame Pandas. |
+| **Data Transformation** | Menghapus penanda kategori di awal judul, mengubah teks menjadi huruf kecil, dan mengubah teks menjadi representasi numerik untuk SVM. | Mengurangi petunjuk label yang terdapat pada penanda kategori dan membuat teks dapat diproses oleh algoritma. | Menggunakan Regex, `str.lower()`, dan `TfidfVectorizer()`. |
+| **Data Splitting** | Membagi dataset menjadi training, validation, dan testing dengan perbandingan 70:15:15. | Memisahkan data untuk pembelajaran, pemantauan performa, dan evaluasi akhir model. | Menggunakan `train_test_split()` sebanyak dua tahap dengan `stratify` dan `random_state=42`. |
+| **Data Balancing** | Tidak melakukan oversampling maupun undersampling. | Mempertahankan distribusi kelas asli pada dataset yang digunakan dalam eksperimen. | Menggunakan data asli tanpa menerapkan teknik penyeimbangan kelas. |
 
 ### Kesimpulan Data Preparation
 
-Data Preparation dilakukan untuk mempersiapkan dataset agar memiliki kualitas dan format yang sesuai sebelum digunakan dalam proses pemodelan klasifikasi berita hoaks.
+Berdasarkan seluruh tahapan yang telah dilakukan, dataset berhasil dipersiapkan dari 31.353 data awal menjadi 31.282 data setelah proses penanganan missing values dan penghapusan duplikat.
 
-Setiap tahapan memiliki tujuan dan metode implementasi yang berbeda. Berikut ringkasan proses Data Preparation yang telah dilakukan.
+Fitur yang digunakan untuk pemodelan akhir adalah judul berita (`Title`) sebagai input dan kolom `hoax` sebagai target klasifikasi.
 
-### 1. Data Cleaning
+Proses transformasi teks dilakukan melalui penghapusan penanda kategori pada awal judul dan lowercasing. Pada model SVM, teks kemudian ditransformasikan menggunakan TF-IDF dengan konfigurasi `max_features=20000`, `ngram_range=(1, 2)`, dan `sublinear_tf=True`.
 
-**Apa yang dilakukan?**
+Dataset selanjutnya dibagi menjadi training, validation, dan testing menggunakan perbandingan 70:15:15 dengan metode stratified split dan `random_state=42`.
 
-Melakukan pembersihan data dengan menangani missing values, menghapus data duplikat, memeriksa outlier, dan menyesuaikan tipe data pada kolom utama.
-
-Hasil proses cleaning:
-- Data awal sebanyak 31.353 baris.
-- Sebanyak 27 baris dihapus karena memiliki nilai kosong pada kolom wajib, yaitu `Title` atau `FullText`.
-- Sebanyak 5 data duplikat dihapus berdasarkan kesamaan judul dan isi berita.
-- Sebanyak 1.756 data terindikasi sebagai outlier berdasarkan panjang teks, tetapi tetap dipertahankan.
-- Jumlah data akhir setelah cleaning sebanyak **31.321 baris**.
-
-**Mengapa dilakukan?**
-
-Data cleaning diperlukan untuk memastikan data yang digunakan memiliki informasi yang memadai, mengurangi data berulang, dan memperbaiki kesesuaian tipe data. Pemeriksaan outlier juga dilakukan untuk mengetahui adanya artikel dengan panjang teks yang tidak biasa.
-
-Data outlier tidak langsung dihapus karena artikel yang terlalu panjang atau pendek belum tentu merupakan data yang salah.
-
-**Bagaimana implementasinya?**
-
-Implementasi dilakukan menggunakan library Pandas dengan beberapa fungsi berikut:
-
-- `dropna()` untuk menghapus baris yang memiliki nilai kosong pada kolom wajib.
-- `drop_duplicates()` untuk menghapus data duplikat berdasarkan kombinasi judul dan isi berita yang sudah dinormalisasi.
-- Metode Interquartile Range (IQR) untuk mendeteksi outlier berdasarkan jumlah kata.
-- `astype()` dan `pd.to_numeric()` untuk menyesuaikan tipe data kolom teks dan label.
-
-### 2. Feature Engineering
-
-**Apa yang dilakukan?**
-
-Membentuk fitur baru dari data yang sudah dibersihkan dengan tahapan:
-- Menghapus penanda kategori pada awal judul, seperti `[SALAH]`, `[BENAR]`, dan `[HOAX]`.
-- Menggabungkan kolom `Title` dan `FullText` menjadi fitur baru bernama `text_raw`.
-- Membuat fitur tambahan `jumlah_karakter` dan `jumlah_kata`.
-- Memisahkan variabel input (`X`) dan target (`y`).
-
-**Mengapa dilakukan?**
-
-Feature engineering dilakukan untuk menghasilkan fitur teks yang lebih informatif bagi proses klasifikasi. Penggabungan judul dan isi berita memungkinkan model memperoleh informasi yang lebih lengkap.
-
-Penghapusan penanda kategori pada judul dilakukan karena penanda tersebut berpotensi memberikan petunjuk langsung mengenai label kepada model.
-
-**Bagaimana implementasinya?**
-
-Implementasi menggunakan Pandas dan Regular Expression (Regex).
-
-- `str.replace()` dengan Regex untuk menghapus penanda di awal judul.
-- Penggabungan kolom `Title` dan `FullText` untuk membentuk `text_raw`.
-- `str.len()` untuk menghitung jumlah karakter.
-- `str.split().str.len()` untuk menghitung jumlah kata.
-- Variabel `X` digunakan untuk menyimpan teks berita, sedangkan `y` menyimpan label `hoax`.
-
-### 3. Data Transformation
-
-**Apa yang dilakukan?**
-
-Melakukan transformasi teks agar dapat diproses oleh algoritma Machine Learning dan Deep Learning.
-
-Tahapan transformasi yang dilakukan meliputi:
-
-1. Text Cleaning: mengubah huruf menjadi kecil, menghapus URL, tag HTML, tanda baca, simbol, serta merapikan spasi.
-2. TF-IDF: mengubah teks menjadi bobot numerik untuk Multinomial Naive Bayes dan SVM.
-3. Tokenization: mengubah kata menjadi urutan angka untuk LSTM.
-4. Padding: menyamakan panjang urutan angka menjadi 300.
-
-**Mengapa dilakukan?**
-
-Algoritma Machine Learning dan Deep Learning tidak dapat langsung memproses teks dalam bentuk kalimat. Oleh karena itu, teks perlu dibersihkan dan diubah menjadi representasi numerik.
-
-TF-IDF digunakan untuk menghasilkan bobot kata, sedangkan tokenisasi dan padding digunakan untuk membentuk urutan angka dengan panjang yang seragam agar dapat diproses oleh LSTM.
-
-**Bagaimana implementasinya?**
-
-Implementasi dilakukan menggunakan Regex, Scikit-learn, dan TensorFlow Keras.
-
-- Fungsi `clean_text()` digunakan untuk membersihkan teks.
-- `TfidfVectorizer()` digunakan dengan `max_features=20000` dan `ngram_range=(1, 2)`.
-- `Tokenizer()` digunakan dengan batas kosakata 20.000 kata dan penanda `<OOV>` untuk kata yang tidak dikenal.
-- `pad_sequences()` digunakan untuk menyamakan panjang urutan menjadi 300 angka dengan padding di bagian akhir.
-
-TF-IDF dan Tokenizer dipelajari hanya dari data training. Data validation dan test menggunakan hasil transformasi dari proses training.
-
-### 4. Data Splitting
-
-**Apa yang dilakukan?**
-
-Membagi dataset menjadi tiga bagian, yaitu training, validation, dan test dengan perbandingan 70:15:15.
-
-Hasil pembagian data:
-
-| Jenis data | Persentase | Jumlah sampel |
-| ---------- | ---------- | ------------- |
-| Training   | 70%        | 21.930        |
-| Validation | 15%        | 4.699         |
-| Test       | 15%        | 4.700         |
-| **Total**  | **100%**   | **31.329**    |
-
-**Mengapa dilakukan?**
-
-Data splitting diperlukan untuk memisahkan data yang digunakan dalam proses pembelajaran, validasi, dan evaluasi akhir.
-
-Pembagian menggunakan stratified split agar proporsi kelas valid dan hoaks tetap terjaga pada setiap bagian data. Penggunaan random state juga memastikan hasil pembagian dapat direproduksi.
-
-**Bagaimana implementasinya?**
-
-Implementasi menggunakan fungsi `train_test_split()` dari Scikit-learn.
-
-Parameter yang digunakan:
-- `test_size=0.30` untuk memisahkan 30% data sementara.
-- `test_size=0.50` untuk membagi data sementara menjadi validation dan test.
-- `stratify=y` untuk mempertahankan proporsi kelas.
-- `random_state=42` untuk menjaga konsistensi pembagian data.
-
-Data training digunakan untuk mempelajari model, validation disiapkan untuk pemilihan dan penyetelan model, sedangkan test disiapkan untuk evaluasi akhir.
-
-
-### Kesimpulan Data Preparation
-
-Berdasarkan seluruh tahapan yang telah dilakukan, dataset berhasil dipersiapkan dari 31.353 data awal menjadi 31.321 data setelah proses cleaning dan penghapusan duplikat.
-
-Fitur teks dibentuk dari gabungan judul dan isi berita, kemudian dibersihkan dan ditransformasikan menggunakan TF-IDF untuk Multinomial Naive Bayes dan SVM, serta tokenisasi dan padding untuk LSTM.
-
-Dataset selanjutnya dibagi menjadi training, validation, dan test dengan perbandingan 70:15:15. Perhitungan Class Weight juga dilakukan menggunakan data training untuk membantu menangani ketidakseimbangan kelas.
-
-Dengan demikian, tahapan Data Preparation telah diselesaikan hingga dataset siap digunakan pada tahap pemodelan.
-
-**Catatan:** Pada notebook ini, Class Weight baru dihitung dan disiapkan untuk pelatihan model. Penerapannya pada proses training akan dilakukan pada tahap pemodelan berikutnya.
-
----
+Dengan demikian, tahapan Data Preparation telah diselesaikan dan dataset telah siap digunakan dalam proses pemodelan sesuai kebutuhan masing-masing algoritma.
 
 ## 6. MODELING  **[M + O]**
 
